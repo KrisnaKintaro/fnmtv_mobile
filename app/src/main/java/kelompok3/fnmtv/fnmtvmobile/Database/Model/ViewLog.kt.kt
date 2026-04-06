@@ -1,8 +1,7 @@
 package kelompok3.fnmtv.fnmtvmobile.Database.Model
 
-data class Reaksi(
+data class `ViewLog.kt`(
     val id: Int = 0,
     val beritaId: Int,
-    val userId: Int,
-    val jenisReaksi: String
+    val ipAddress: String? = null
 )
