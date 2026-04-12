@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@color/bg_cream">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data Pengguna"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/text_main"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/et_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="text"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/et_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ganti Password"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/text_main"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/et_password_lama"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password Lama (kosongkan jika tidak diganti)"
+        android:inputType="textPassword"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/et_password_baru"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password Baru"
+        android:inputType="textPassword"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btn_simpan_profil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simpan Perubahan"
+        android:backgroundTint="@color/red_primary"
+        android:textColor="@color/white_pure" />
+
+</LinearLayout>

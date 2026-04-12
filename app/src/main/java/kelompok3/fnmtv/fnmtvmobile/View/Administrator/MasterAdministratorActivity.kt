@@ -160,6 +160,11 @@ class MasterAdministratorActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_profile -> {
+                binding.toolbar.title = "Edit Profil" // Ganti judul toolbar
+                replaceFragment(EditProfilFragment()) // Panggil fragment yang baru kita bikin
+                true
+            }
             R.id.action_logout -> {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
