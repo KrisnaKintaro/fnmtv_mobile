@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_verifikasi"
+        android:icon="@drawable/ic_verification"
+        android:title="Antrean Verifikasi" />
+    <item
+        android:id="@+id/nav_berita_terbit"
+        android:icon="@drawable/ic_news"
+        android:title="Riwayat Publikasi" />
+</menu>
+<!--test commit-->
