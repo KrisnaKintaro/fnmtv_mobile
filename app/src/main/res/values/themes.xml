@@ -26,7 +26,7 @@
         <item name="android:colorBackground">@color/red_primary</item>
         <item name="android:popupBackground">@color/red_primary</item>
 
-        <!-- Warna text & icon -->
+        <!-- Warna text & iconn -->
         <item name="colorOnSurface">@color/white_pure</item>
         <item name="android:textColor">@color/white_pure</item>
         <item name="android:textColorPrimary">@color/white_pure</item>

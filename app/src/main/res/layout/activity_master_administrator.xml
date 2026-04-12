@@ -47,3 +47,5 @@
         app:menu="@menu/sidebar_menu_admin" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
+
+<!--malas lah ga bisa git add tai-->

@@ -34,7 +34,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // 1. Ambil Role
+        // Role
         var roleUser = intent.getStringExtra("ROLE_USER") ?: "Admin"
         roleUser = "Admin"
 
