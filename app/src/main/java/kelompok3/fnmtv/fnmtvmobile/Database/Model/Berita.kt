@@ -1,8 +1,6 @@
 package kelompok3.fnmtv.fnmtvmobile.Database.Model
 
-enum class StatusBerita {
-    Draft, Pending, Published, Rejected
-}
+enum class StatusBerita { Draft, Pending, Published, Rejected }
 
 data class Berita(
     val id: Int = 0,
@@ -18,7 +16,7 @@ data class Berita(
     val jumlahView: Int = 0,
     val waktuPublikasi: String? = null,
 
-    // Hasil Query JOIN untuk UI
+    // --- Atribut Join Tambahan ---
     val namaPenulis: String = "",
     val namaKategori: String = ""
 )

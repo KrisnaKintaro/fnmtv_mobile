@@ -1,8 +1,6 @@
 package kelompok3.fnmtv.fnmtvmobile.Database.Model
 
-enum class StatusPembayaran {
-    Paid, Unpaid
-}
+enum class StatusPembayaran { Paid, Unpaid }
 
 data class Pendapatan(
     val id: Int = 0,
@@ -12,7 +10,7 @@ data class Pendapatan(
     val statusPembayaran: String = StatusPembayaran.Unpaid.name,
     val waktuPembayaran: String? = null,
 
-    // Hasil Query JOIN untuk UI
+    // --- Atribut Join Tambahan ---
     val judulBerita: String = "",
     val namaPenulis: String = ""
 )

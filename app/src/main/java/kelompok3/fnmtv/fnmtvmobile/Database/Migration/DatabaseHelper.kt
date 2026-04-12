@@ -7,14 +7,15 @@ import android.database.sqlite.SQLiteOpenHelper
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileDB", null, 1) {
 
     override fun onCreate(db: SQLiteDatabase) {
-        // 1. Table Users (Enum: Admin, Viewer, Editor, Redaksi)
+        // 1. Table Users
         db.execSQL("""
             CREATE TABLE users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL,
                 email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
-                role TEXT CHECK(role IN ('Admin', 'Viewer', 'Editor', 'Redaksi')) DEFAULT 'Viewer'
+                role TEXT CHECK(role IN ('Admin', 'Viewer', 'Editor', 'Redaksi')) DEFAULT 'Viewer',
+                status TEXT CHECK(status IN ('Aktif', 'Nonaktif')) DEFAULT 'Aktif'
             )
         """.trimIndent())
 
@@ -27,7 +28,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
             )
         """.trimIndent())
 
-        // 3. Table Beritas (Enum: Draft, Pending, Published, Rejected)
+        // 3. Table Beritas
         db.execSQL("""
             CREATE TABLE beritas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,7 +48,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
             )
         """.trimIndent())
 
-        // 4. Table Pendapatans (Enum: Paid, Unpaid)
+        // 4. Table Pendapatans
         db.execSQL("""
             CREATE TABLE pendapatans (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,7 +62,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
             )
         """.trimIndent())
 
-        // 5. Table Komentars (Enum: Pending, Approved, Spam)
+        // 5. Table Komentars
         db.execSQL("""
             CREATE TABLE komentars (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
