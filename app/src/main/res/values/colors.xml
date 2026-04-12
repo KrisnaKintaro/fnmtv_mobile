@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="red_primary">#CC0000</color>
+    <color name="red_dark">#990000</color>
+    <color name="bg_cream">#F5F4F0</color>
+    <color name="white_pure">#FFFFFF</color>
+    <color name="border_gray">#E0DDD6</color>
+    <color name="text_main">#1A1A1A</color>
+    <color name="text_muted">#7A7570</color>
 </resources>
