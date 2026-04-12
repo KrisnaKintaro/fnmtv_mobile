@@ -4,7 +4,12 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileDB", null, 1) {
+class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileDB", null, 2) { // Versi gw naikin jadi 2 biar database-nya otomatis keriset
+
+    override fun onOpen(db: SQLiteDatabase) {
+        super.onOpen(db)
+        db.setForeignKeyConstraintsEnabled(true)
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
         // 1. Table Users
@@ -15,7 +20,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
                 email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 role TEXT CHECK(role IN ('Admin', 'Viewer', 'Editor', 'Redaksi')) DEFAULT 'Viewer',
-                status TEXT CHECK(status IN ('Aktif', 'Nonaktif')) DEFAULT 'Aktif'
+                status TEXT CHECK(status IN ('Aktif', 'Nonaktif')) DEFAULT 'Aktif',
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
             )
         """.trimIndent())
 
@@ -24,11 +30,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
             CREATE TABLE kategoris (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nama_kategori TEXT NOT NULL,
-                slug TEXT UNIQUE NOT NULL
+                slug TEXT UNIQUE NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
             )
         """.trimIndent())
 
-        // 3. Table Beritas
+        // 3. Table Beritas (Ada Soft Deletes)
         db.execSQL("""
             CREATE TABLE beritas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,12 +50,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
                 status_berita TEXT CHECK(status_berita IN ('Draft', 'Pending', 'Published', 'Rejected')) DEFAULT 'Draft',
                 jumlah_view INTEGER DEFAULT 0,
                 waktu_publikasi TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                deleted_at TEXT,
                 FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY(kategori_id) REFERENCES kategoris(id) ON DELETE CASCADE
             )
         """.trimIndent())
 
-        // 4. Table Pendapatans
+        // 4. Table Pendapatans (Ada Soft Deletes)
         db.execSQL("""
             CREATE TABLE pendapatans (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,12 +66,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
                 nominal_pendapatan REAL DEFAULT 0,
                 status_pembayaran TEXT CHECK(status_pembayaran IN ('Paid', 'Unpaid')) DEFAULT 'Unpaid',
                 waktu_pembayaran TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                deleted_at TEXT,
                 FOREIGN KEY(berita_id) REFERENCES beritas(id) ON DELETE CASCADE,
                 FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
             )
         """.trimIndent())
 
-        // 5. Table Komentars
+        // 5. Table Komentars (Ada Soft Deletes)
         db.execSQL("""
             CREATE TABLE komentars (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,6 +81,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
                 user_id INTEGER,
                 isi_komentar TEXT NOT NULL,
                 status_moderasi TEXT CHECK(status_moderasi IN ('Pending', 'Approved', 'Spam')) DEFAULT 'Pending',
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                deleted_at TEXT,
                 FOREIGN KEY(berita_id) REFERENCES beritas(id) ON DELETE CASCADE,
                 FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
             )
@@ -82,6 +95,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
                 berita_id INTEGER,
                 user_id INTEGER,
                 jenis_reaksi TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY(berita_id) REFERENCES beritas(id) ON DELETE CASCADE,
                 FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
             )
@@ -93,6 +107,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "FnmtvMobileD
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 berita_id INTEGER,
                 ip_address TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY(berita_id) REFERENCES beritas(id) ON DELETE CASCADE
             )
         """.trimIndent())

@@ -1,4 +1,4 @@
 package kelompok3.fnmtv.fnmtvmobile.Controller.Administrator.Redaksi
 
-class firstController {
+class dummyAdapterJanganDipake {
 }

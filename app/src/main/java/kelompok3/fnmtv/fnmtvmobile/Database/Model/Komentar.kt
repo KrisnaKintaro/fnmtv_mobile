@@ -1,14 +1,15 @@
 package kelompok3.fnmtv.fnmtvmobile.Database.Model
 
-enum class StatusModerasi { Pending, Approved, Spam }
-
 data class Komentar(
     val id: Int = 0,
-    val beritaId: Int,
-    val userId: Int,
-    val isiKomentar: String,
-    val statusModerasi: String = StatusModerasi.Pending.name,
+    val berita_id: Int,
+    val user_id: Int,
+    val isi_komentar: String,
+    val status_moderasi: String = "Pending",
 
-    // --- Atribut Join Tambahan ---
-    val namaPengomentar: String = ""
+    // --- TAMBAHAN UNTUK RELASI JOIN ---
+    val nama_user: String? = null,       // Buat nampilin siapa yang komen
+    val judul_berita: String? = null,     // Buat nampilin komennya di artikel mana
+    val created_at: String? = null,
+    val deleted_at: String? = null
 )

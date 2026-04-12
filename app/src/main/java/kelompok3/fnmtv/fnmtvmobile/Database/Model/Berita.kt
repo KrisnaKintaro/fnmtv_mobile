@@ -1,22 +1,23 @@
 package kelompok3.fnmtv.fnmtvmobile.Database.Model
 
-enum class StatusBerita { Draft, Pending, Published, Rejected }
-
 data class Berita(
     val id: Int = 0,
-    val userId: Int,
-    val kategoriId: Int,
-    val judulBerita: String,
+    val user_id: Int,
+    val kategori_id: Int,
+    val judul_berita: String,
     val slug: String,
-    val isiBerita: String,
-    val fotoThumbnail: String,
-    val fotoIsiBerita: String? = null,
-    val catatanPenolakan: String? = null,
-    val statusBerita: String = StatusBerita.Draft.name,
-    val jumlahView: Int = 0,
-    val waktuPublikasi: String? = null,
+    val isi_berita: String,
+    val foto_thumbnail: String,
+    val foto_isi_berita: String? = null,
+    val catatan_penolakan: String? = null,
+    val status_berita: String = "Draft",
+    val jumlah_view: Int = 0,
+    val waktu_publikasi: String? = null,
 
-    // --- Atribut Join Tambahan ---
-    val namaPenulis: String = "",
-    val namaKategori: String = ""
+    // --- TAMBAHAN UNTUK RELASI (Hasil JOIN) ---
+    // Properti ini kita set nullable (?) biar gak error kalau kita cuma query tabel beritas doang
+    val nama_penulis: String? = null,
+    val nama_kategori: String? = null,
+    val created_at: String? = null,
+    val deleted_at: String? = null
 )

@@ -10,6 +10,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.firstFragment
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenUserFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterAdministratorBinding
 
@@ -83,6 +84,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
                 }
                 R.id.nav_users -> {
                     binding.toolbar.title = "Manajemen User"
+                    replaceFragment(manajemenUserFragment())
                 }
                 R.id.nav_kategori -> {
                     binding.toolbar.title = "Manajemen Kategori"
@@ -162,7 +164,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_profile -> {
                 binding.toolbar.title = "Edit Profil" // Ganti judul toolbar
-                replaceFragment(EditProfilFragment()) // Panggil fragment yang baru kita bikin
+                replaceFragment(dummyControllerJanganDipake()) // Panggil fragment yang baru kita bikin
                 true
             }
             R.id.action_logout -> {

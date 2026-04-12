@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment // KOMPONEN NO 15
 import kelompok3.fnmtv.fnmtvmobile.databinding.FragmentEditProfilBinding
 
-class EditProfilFragment : Fragment() {
+class dummyControllerJanganDipake : Fragment() {
 
     private var _binding: FragmentEditProfilBinding? = null
     private val binding get() = _binding!!
