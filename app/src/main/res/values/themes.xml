@@ -1,9 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.FnmtvMobile" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+    <style name="Base.Theme.FNMTV" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/red_primary</item>
+        <item name="colorOnPrimary">@color/white_pure</item>
 
-    <style name="Theme.FnmtvMobile" parent="Base.Theme.FnmtvMobile" />
+        <item name="android:windowBackground">@color/bg_cream</item>
+
+        <item name="android:statusBarColor">@color/red_dark</item>
+    </style>
 </resources>
