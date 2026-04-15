@@ -1,25 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bg_cream">
+    android:background="#F5F4F0">
 
-    <EditText
-        android:id="@+id/et_search_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Cari user..."
-        android:layout_margin="15dp"
-        android:padding="12dp"
-        android:background="@color/white_pure"
-        android:inputType="text" />
-
-    <ListView
-        android:id="@+id/lv_users"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/border_gray"
-        android:dividerHeight="1dp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manajemen Pengguna"
+            android:textColor="#1A1A1A"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E0DDD6"
+            app:strokeWidth="1dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/ac_search_user"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="45dp"
+                        android:background="@drawable/bg_input_rounded"
+                        android:hint="Cari username..."
+                        android:paddingHorizontal="16dp"
+                        android:textColorHint="#A09C98"
+                        android:textSize="14sp"/>
+
+                    <Spinner
+                        android:id="@+id/spin_role_filter"
+                        android:layout_width="130dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="12dp"
+                        android:background="@drawable/bg_input_rounded"
+                        android:paddingHorizontal="8dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
+
+                    <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
+
+                    <Button
+                        android:id="@+id/btn_tambah_user"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        android:text="+ Tambah"
+                        android:backgroundTint="#CC0000"
+                        android:textColor="#FFFFFF"
+                        android:elevation="0dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E0DDD6"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="#FFFFFF">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Daftar Pengguna Sistem"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#7A7570"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:background="#FCFBF9"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E0DDD6"/>
+
+                <ListView
+                    android:id="@+id/lv_users"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="#E0DDD6"
+                    android:dividerHeight="1dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="16dp"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</FrameLayout>
