@@ -10,6 +10,7 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.firstFragment
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenKategoriFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenUserFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterAdministratorBinding
@@ -117,6 +118,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
 
                 R.id.nav_kategori -> {
                     supportActionBar?.title = "Manajemen Kategori"
+                    replaceFragment(manajemenKategoriFragment())
 
                 }
 
