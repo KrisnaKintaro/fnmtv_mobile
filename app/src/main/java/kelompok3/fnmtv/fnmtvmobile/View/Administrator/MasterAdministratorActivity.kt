@@ -67,24 +67,29 @@ class MasterAdministratorActivity : AppCompatActivity() {
 
     // GABUNGAN FINAL BUAT KLIK HAMBURGER & TITIK TIGA
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // 1. Ini WAJIB buat nangkep klik icon garis 3 (Hamburger) biar sidebar kebuka
+        // 1. Ini WAJIB buat nangkep klik icon garis 3 (Hamburger)
         if (toggle.onOptionsItemSelected(item)) {
             return true
         }
 
-        // 2. Ini buat nangkep klik menu Edit Profil & Logout di titik tiga
+        // 2. Nangkep menu umum
         return when (item.itemId) {
             R.id.action_profile -> {
-                supportActionBar?.title = "Edit Profil" // 100% Legal pake bawaan ActionBar
-//                replaceFragment(EditProfilFragment()) // Buka fragment Edit Profil lu
+                supportActionBar?.title = "Edit Profil"
+                // replaceFragment(EditProfilFragment())
                 true
             }
+
             R.id.action_logout -> {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            else -> {
+                // Kalau yang diklik BUKAN Profile atau Logout (misal: Refresh),
+                // lempar ke Fragment yang lagi aktif di layar.
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
@@ -112,6 +117,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
 
                 R.id.nav_kategori -> {
                     supportActionBar?.title = "Manajemen Kategori"
+
                 }
 
                 R.id.nav_komentar -> {
@@ -163,7 +169,9 @@ class MasterAdministratorActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_verifikasi -> {
                     supportActionBar?.title = "Antrean Verifikasi"
+
                 }
+
                 R.id.nav_berita_terbit -> {
                     supportActionBar?.title = "Riwayat Publikasi"
                 }

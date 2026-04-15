@@ -1,54 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="15dp"
-    android:background="@color/white_pure">
+    android:padding="12dp">
 
     <TextView
-        android:id="@+id/txt_inisial"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@color/red_primary"
+        android:id="@+id/txt_inisial_role"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_inisial_role"
         android:gravity="center"
-        android:text="U"
-        android:textColor="@color/white_pure"
-        android:textStyle="bold"
-        android:textSize="20sp" />
+        android:text="A"
+        android:textColor="#1A1A1A"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginStart="15dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txt_nama_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nama User"
-            android:textColor="@color/text_main"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            android:textColor="#1A1A1A"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txt_role_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Role: Admin"
-            android:textColor="@color/text_muted"
-            android:textSize="14sp" />
+            android:textColor="#7A7570"
+            android:textSize="12sp" />
     </LinearLayout>
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_opsi_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/red_primary"
-        android:textColor="@color/white_pure"
-        android:text="Opsi" />
-
+        app:tint="#CC0000"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_more" />
 </LinearLayout>
