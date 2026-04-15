@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_rounded"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tv_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tambah Kategori"
+        android:textColor="#1A1A1A"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lbl_nama_kategori"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Nama Kategori *"
+        android:textColor="#1A1A1A"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_dialog_title" />
+
+    <EditText
+        android:id="@+id/et_form_nama_kategori"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="6dp"
+        android:background="#F5F4F0"
+        android:hint="contoh: Teknologi, Olahraga"
+        android:paddingHorizontal="12dp"
+        android:textColorHint="#A09C98"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/lbl_nama_kategori" />
+
+    <TextView
+        android:id="@+id/lbl_slug_kategori"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Slug *"
+        android:textColor="#1A1A1A"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_form_nama_kategori" />
+
+    <EditText
+        android:id="@+id/et_form_slug_kategori"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="6dp"
+        android:background="#F5F4F0"
+        android:hint="contoh: olahraga-lari"
+        android:paddingHorizontal="12dp"
+        android:textColor="#1A3A7A"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/lbl_slug_kategori" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_form_slug_kategori">
+
+        <Button
+            android:id="@+id/btn_batal_kategori"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#E0DDD6"
+            android:text="Batal"
+            android:textColor="#1A1A1A"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_simpan_kategori"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="#CC0000"
+            android:text="Simpan"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

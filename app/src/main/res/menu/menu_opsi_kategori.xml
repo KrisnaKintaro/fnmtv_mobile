@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_edit_kategori"
+        android:title="Edit Kategori"
+        android:icon="@drawable/ic_edit" />
+    <item
+        android:id="@+id/menu_hapus_kategori"
+        android:title="Hapus Kategori"
+        android:icon="@drawable/ic_hapus" />
+</menu>
