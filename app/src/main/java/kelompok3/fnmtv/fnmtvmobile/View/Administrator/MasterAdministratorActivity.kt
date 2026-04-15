@@ -26,6 +26,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
         binding = ActivityMasterAdministratorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //  Masang seeder
         val seeder = kelompok3.fnmtv.fnmtvmobile.Database.Migration.DatabaseSeeder(this)
         seeder.run()
 
