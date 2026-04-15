@@ -42,12 +42,13 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <ImageButton
+    <Button
         android:id="@+id/btn_opsi_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_more"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:backgroundTint="@color/red_primary"
+        android:textColor="@color/white_pure"
+        android:text="Opsi" />
 
 </LinearLayout>

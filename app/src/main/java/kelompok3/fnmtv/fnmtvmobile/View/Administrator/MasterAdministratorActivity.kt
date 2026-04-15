@@ -24,16 +24,16 @@ class MasterAdministratorActivity : AppCompatActivity() {
         binding = ActivityMasterAdministratorBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-
-        // Setup dasar Hamburger Icon
+        // Hamburger
         toggle = ActionBarDrawerToggle(
-            this, binding.drawerLayout, binding.toolbar,
+            this, binding.drawerLayout,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
-        toggle.drawerArrowDrawable.color = resources.getColor(R.color.white_pure)
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
+        // titik 3 kanan atas navbar header
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Role
         var roleUser = intent.getStringExtra("ROLE_USER") ?: "Admin"
@@ -48,21 +48,43 @@ class MasterAdministratorActivity : AppCompatActivity() {
     }
 
     private fun applyUIConfig(title: String, bottomMenuRes: Int, lockSidebar: Boolean) {
-        // 1. Ganti Judul
-        binding.toolbar.title = title
+        // Ganti judul pakai supportActionBar
+        supportActionBar?.title = title
 
-        // 2. Ganti Menu Bawah
         binding.bottomNav.menu.clear()
         binding.bottomNav.inflateMenu(bottomMenuRes)
 
-        // 3. Atur Kunci Sidebar
         if (lockSidebar) {
             binding.drawerLayout.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             toggle.isDrawerIndicatorEnabled = false
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false) // Sembunyikan tombol back/hamburger
         } else {
             binding.drawerLayout.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED)
             toggle.isDrawerIndicatorEnabled = true
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    // GABUNGAN FINAL BUAT KLIK HAMBURGER & TITIK TIGA
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // 1. Ini WAJIB buat nangkep klik icon garis 3 (Hamburger) biar sidebar kebuka
+        if (toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+
+        // 2. Ini buat nangkep klik menu Edit Profil & Logout di titik tiga
+        return when (item.itemId) {
+            R.id.action_profile -> {
+                supportActionBar?.title = "Edit Profil" // 100% Legal pake bawaan ActionBar
+//                replaceFragment(EditProfilFragment()) // Buka fragment Edit Profil lu
+                true
+            }
+            R.id.action_logout -> {
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -79,18 +101,21 @@ class MasterAdministratorActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_analisis -> {
-                    binding.toolbar.title = "Analitik Statistik"
+                    supportActionBar?.title = "Analitik Statistik"
                     replaceFragment(firstFragment())
                 }
+
                 R.id.nav_users -> {
-                    binding.toolbar.title = "Manajemen User"
+                    supportActionBar?.title = "Manajemen User"
                     replaceFragment(manajemenUserFragment())
                 }
+
                 R.id.nav_kategori -> {
-                    binding.toolbar.title = "Manajemen Kategori"
+                    supportActionBar?.title = "Manajemen Kategori"
                 }
+
                 R.id.nav_komentar -> {
-                    binding.toolbar.title = "Moderasi Komentar"
+                    supportActionBar?.title = "Moderasi Komentar"
                 }
             }
             true
@@ -99,10 +124,12 @@ class MasterAdministratorActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_finance -> {
-                    binding.toolbar.title = "Laporan Finansial"
+                    supportActionBar?.title = "Laporan Finansial"
+
                 }
+
                 R.id.nav_settings -> {
-                    binding.toolbar.title = "Pengaturan"
+                    supportActionBar?.title = "Pengaturan"
                 }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -117,10 +144,11 @@ class MasterAdministratorActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_tulis_berita -> {
-                    binding.toolbar.title = "Tulis Berita Baru"
+                    supportActionBar?.title = "Tulis Berita Baru"
                 }
+
                 R.id.nav_berita_saya -> {
-                    binding.toolbar.title = "Daftar Berita Saya"
+                    supportActionBar?.title = "Daftar Berita Saya"
                 }
             }
             true
@@ -133,19 +161,25 @@ class MasterAdministratorActivity : AppCompatActivity() {
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_verifikasi -> binding.toolbar.title = "Antrean Verifikasi"
-                R.id.nav_berita_terbit -> binding.toolbar.title = "Riwayat Publikasi"
+                R.id.nav_verifikasi -> {
+                    supportActionBar?.title = "Antrean Verifikasi"
+                }
+                R.id.nav_berita_terbit -> {
+                    supportActionBar?.title = "Riwayat Publikasi"
+                }
             }
             true
         }
     }
 
-    // REVISI 5: Mantra khusus buat munculin icon di menu titik 3 (Overflow Menu)
     override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         if (menu.javaClass.simpleName == "MenuBuilder") {
             try {
                 // Menggunakan teknik 'Reflection' buat ngakses method tersembunyi milik Android
-                val m = menu.javaClass.getDeclaredMethod("setOptionalIconsVisible", java.lang.Boolean.TYPE)
+                val m = menu.javaClass.getDeclaredMethod(
+                    "setOptionalIconsVisible",
+                    java.lang.Boolean.TYPE
+                )
                 m.isAccessible = true
                 m.invoke(menu, true)
             } catch (e: Exception) {
@@ -160,21 +194,6 @@ class MasterAdministratorActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_profile -> {
-                binding.toolbar.title = "Edit Profil" // Ganti judul toolbar
-                replaceFragment(dummyControllerJanganDipake()) // Panggil fragment yang baru kita bikin
-                true
-            }
-            R.id.action_logout -> {
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
