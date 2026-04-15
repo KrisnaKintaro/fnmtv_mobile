@@ -1,6 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F4F0">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Analisis Tren Berita"
+            android:textColor="#1A1A1A"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E0DDD6"
+            app:strokeWidth="1dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="12dp">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggle_main_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:singleSelection="true"
+                        app:selectionRequired="true"
+                        app:checkedButton="@+id/btn_period_today">
+
+                        <Button android:id="@+id/btn_period_today" style="?attr/materialButtonOutlinedStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hari Ini" android:textSize="11sp"/>
+                        <Button android:id="@+id/btn_period_7days" style="?attr/materialButtonOutlinedStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="7 Hari" android:textSize="11sp"/>
+                        <Button android:id="@+id/btn_period_30days" style="?attr/materialButtonOutlinedStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="30 Hari" android:textSize="11sp"/>
+                        <Button android:id="@+id/btn_period_1year" style="?attr/materialButtonOutlinedStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1 Tahun" android:textSize="11sp"/>
+                        <Button android:id="@+id/btn_period_all" style="?attr/materialButtonOutlinedStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Semua" android:textSize="11sp"/>
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:gravity="center">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Tayangan" android:textSize="11sp" android:textColor="#7A7570"/>
+                    <TextView android:id="@+id/tv_summary_views" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="18sp" android:textStyle="bold" android:textColor="#CC0000"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:gravity="center">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Berita Publish" android:textSize="11sp" android:textColor="#7A7570"/>
+                    <TextView android:id="@+id/tv_summary_berita" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="18sp" android:textStyle="bold" android:textColor="#1A1A1A"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:gravity="center">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Komentar" android:textSize="11sp" android:textColor="#7A7570"/>
+                    <TextView android:id="@+id/tv_summary_komentar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="18sp" android:textStyle="bold" android:textColor="#1A3A7A"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:gravity="center">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pendapatan (Paid)" android:textSize="11sp" android:textColor="#7A7570"/>
+                    <TextView android:id="@+id/tv_summary_pendapatan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rp 0" android:textSize="16sp" android:textStyle="bold" android:textColor="#1A7A3C"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </GridLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp" android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="#FFFFFF" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Grafik Tren" android:textSize="16sp" android:textStyle="bold" android:textColor="#1A1A1A" android:layout_marginBottom="12dp"/>
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/toggle_metric_chart" android:layout_width="match_parent" android:layout_height="wrap_content" app:singleSelection="true" app:selectionRequired="true" app:checkedButton="@+id/btn_metric_views" android:layout_marginBottom="12dp">
+                    <Button android:id="@+id/btn_metric_views" style="?attr/materialButtonOutlinedStyle" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Views" android:textSize="11sp"/>
+                    <Button android:id="@+id/btn_metric_pengunjung" style="?attr/materialButtonOutlinedStyle" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Pengunjung" android:textSize="11sp"/>
+                    <Button android:id="@+id/btn_metric_komentar" style="?attr/materialButtonOutlinedStyle" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Komentar" android:textSize="11sp"/>
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+                <com.github.mikephil.charting.charts.LineChart android:id="@+id/trendChart" android:layout_width="match_parent" android:layout_height="250dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp" android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="#FFFFFF" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Heatmap Jadwal Publikasi Terbaik Mingguan" android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" android:layout_marginBottom="12dp"/>
+                <GridLayout android:id="@+id/gridHeatmap" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="8" android:useDefaultMargins="true"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp" android:layout_marginBottom="32dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="#FFFFFF">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Top 10 Berita Terpopuler (Views + Komen + Reaksi)" android:textSize="13sp" android:textStyle="bold" android:textColor="#7A7570" android:padding="16dp" android:background="#FCFBF9"/>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0DDD6"/>
+                <ListView android:id="@+id/lv_top_berita" android:layout_width="match_parent" android:layout_height="450dp" android:divider="#E0DDD6" android:dividerHeight="1dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

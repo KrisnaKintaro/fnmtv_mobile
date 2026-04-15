@@ -12,6 +12,7 @@ import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.firstFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenKategoriFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenUserFragment
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.statistikBeritaFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterAdministratorBinding
 
@@ -24,6 +25,9 @@ class MasterAdministratorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMasterAdministratorBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val seeder = kelompok3.fnmtv.fnmtvmobile.Database.Migration.DatabaseSeeder(this)
+        seeder.run()
 
         // Hamburger
         toggle = ActionBarDrawerToggle(
@@ -108,7 +112,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_analisis -> {
                     supportActionBar?.title = "Analitik Statistik"
-                    replaceFragment(firstFragment())
+                    replaceFragment(statistikBeritaFragment())
                 }
 
                 R.id.nav_users -> {
@@ -124,6 +128,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
 
                 R.id.nav_komentar -> {
                     supportActionBar?.title = "Moderasi Komentar"
+
                 }
             }
             true
