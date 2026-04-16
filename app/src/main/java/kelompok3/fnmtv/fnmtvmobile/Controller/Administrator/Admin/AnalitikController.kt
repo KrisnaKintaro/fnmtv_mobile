@@ -159,31 +159,115 @@ class AnalitikController(context: Context) {
     }
 
     // 4. HEATMAP DATA (REVISI PAS 7 HARI)
-    fun getHeatmapData(): List<Int> {
-        val result = MutableList(7) { 0 } // Bikin list isi 7 angka 0 (Minggu-Sabtu)
+    fun getHeatmapData(periode: String): List<Pair<String, Int>> {
+        val result = mutableListOf<Pair<String, Int>>()
         try {
             val db = dbHelper.readableDatabase
-            val query = """
-                SELECT cast(strftime('%w', created_at) as integer) as hari, COUNT(*) as qty 
-                FROM beritas 
-                WHERE status_berita = 'Published'
-                GROUP BY hari
-            """.trimIndent()
+            val sdfDb = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+            val cal = java.util.Calendar.getInstance()
 
-            db.rawQuery(query, null).use { cursor ->
-                if (cursor.moveToFirst()) {
-                    do {
-                        val hari = getIntSafe(cursor, "hari")
-                        val qty = getIntSafe(cursor, "qty")
-                        if (hari in 0..6) {
-                            result[hari] = qty // Masukin total berita sesuai urutan harinya
+            when (periode) {
+                "Hari Ini", "7 Hari" -> {
+                    cal.add(java.util.Calendar.DAY_OF_YEAR, -6)
+                    val skeleton = mutableMapOf<String, Int>()
+                    val labels = mutableMapOf<String, String>()
+                    val sdfLabel = java.text.SimpleDateFormat("dd/MM\nEEE", java.util.Locale("id", "ID")) // Format: 15/04 \n Sen
+
+                    for (i in 0..6) {
+                        val dStr = sdfDb.format(cal.time)
+                        skeleton[dStr] = 0
+                        labels[dStr] = sdfLabel.format(cal.time)
+                        cal.add(java.util.Calendar.DAY_OF_YEAR, 1)
+                    }
+
+                    val query = """
+                        SELECT DATE(created_at) as tgl, COUNT(*) as qty FROM beritas 
+                        WHERE status_berita = 'Published' AND DATE(created_at) >= DATE('now', '-6 days', 'localtime') GROUP BY tgl
+                    """.trimIndent()
+
+                    db.rawQuery(query, null).use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            do {
+                                val tgl = getStringSafe(cursor, "tgl")
+                                if (skeleton.containsKey(tgl)) skeleton[tgl] = getIntSafe(cursor, "qty")
+                            } while (cursor.moveToNext())
                         }
-                    } while (cursor.moveToNext())
+                    }
+                    skeleton.forEach { (k, v) -> result.add(Pair(labels[k] ?: "", v)) }
+                }
+
+                "30 Hari" -> {
+                    cal.add(java.util.Calendar.DAY_OF_YEAR, -29)
+                    val skeleton = mutableMapOf<String, Int>()
+                    val labels = mutableMapOf<String, String>()
+                    val sdfLabel = java.text.SimpleDateFormat("dd", java.util.Locale("id", "ID")) // Format Kalender: 15
+
+                    for (i in 0..29) {
+                        val dStr = sdfDb.format(cal.time)
+                        skeleton[dStr] = 0
+                        labels[dStr] = sdfLabel.format(cal.time)
+                        cal.add(java.util.Calendar.DAY_OF_YEAR, 1)
+                    }
+
+                    val query = """
+                        SELECT DATE(created_at) as tgl, COUNT(*) as qty FROM beritas 
+                        WHERE status_berita = 'Published' AND DATE(created_at) >= DATE('now', '-29 days', 'localtime') GROUP BY tgl
+                    """.trimIndent()
+
+                    db.rawQuery(query, null).use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            do {
+                                val tgl = getStringSafe(cursor, "tgl")
+                                if (skeleton.containsKey(tgl)) skeleton[tgl] = getIntSafe(cursor, "qty")
+                            } while (cursor.moveToNext())
+                        }
+                    }
+                    skeleton.forEach { (k, v) -> result.add(Pair(labels[k] ?: "", v)) }
+                }
+
+                "1 Tahun" -> {
+                    val skeleton = mutableMapOf<String, Int>()
+                    val bulanNames = arrayOf("Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des")
+
+                    for (i in 1..12) skeleton[i.toString().padStart(2, '0')] = 0
+
+                    val query = """
+                        SELECT strftime('%m', created_at) as bulan, COUNT(*) as qty FROM beritas 
+                        WHERE status_berita = 'Published' AND strftime('%Y', created_at) = strftime('%Y', 'now', 'localtime') GROUP BY bulan
+                    """.trimIndent()
+
+                    db.rawQuery(query, null).use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            do {
+                                val bulan = getStringSafe(cursor, "bulan")
+                                if (skeleton.containsKey(bulan)) skeleton[bulan] = getIntSafe(cursor, "qty")
+                            } while (cursor.moveToNext())
+                        }
+                    }
+                    skeleton.forEach { (k, v) -> result.add(Pair(bulanNames[k.toInt() - 1], v)) }
+                }
+
+                "Semua" -> {
+                    val query = """
+                        SELECT strftime('%Y', created_at) as tahun, COUNT(*) as qty FROM beritas 
+                        WHERE status_berita = 'Published' GROUP BY tahun ORDER BY tahun ASC
+                    """.trimIndent()
+
+                    db.rawQuery(query, null).use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            do {
+                                val tahun = getStringSafe(cursor, "tahun")
+                                val qty = getIntSafe(cursor, "qty")
+                                // Langsung masukin ke result karena kita cuma butuh tahun yang ada datanya aja
+                                if (tahun.isNotEmpty()) {
+                                    result.add(Pair(tahun, qty))
+                                }
+                            } while (cursor.moveToNext())
+                        }
+                    }
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { e.printStackTrace() }
         return result
     }
 }
