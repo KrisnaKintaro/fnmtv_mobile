@@ -37,7 +37,6 @@ class DetailRevisiFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         controller = EditorController(requireContext())
 
-        // Setup UI untuk Mode Revisi
         binding.tvTitlePage.text = "Revisi Berita"
         binding.btnSimpanDraft.text = "Simpan Perubahan"
         binding.btnKirimRedaksi.text = "Kirim Ulang"
@@ -45,13 +44,15 @@ class DetailRevisiFragment : Fragment() {
         loadDataBerita()
 
         binding.btnSimpanDraft.setOnClickListener {
-            simpanRevisi()
+            if (simpanRevisi()) {
+                parentFragmentManager.popBackStack()
+            }
         }
 
         binding.btnKirimRedaksi.setOnClickListener {
             if (simpanRevisi()) {
-                if (controller.ajukanPublikasi(beritaId)) {
-                    Toast.makeText(context, "Berita berhasil dikirim ulang!", Toast.LENGTH_SHORT).show()
+                if (controller.updateStatusBerita(beritaId, "Pending")) {
+                    Toast.makeText(context, "Berita dikirim ulang!", Toast.LENGTH_SHORT).show()
                     parentFragmentManager.popBackStack()
                 }
             }
@@ -59,14 +60,11 @@ class DetailRevisiFragment : Fragment() {
     }
 
     private fun loadDataBerita() {
-        val allBerita = controller.getBeritaSaya(1) // Dummy user ID
+        val allBerita = controller.getBeritaSaya(1) // Sesuaikan userId
         val berita = allBerita.find { it.id == beritaId }
-        
         berita?.let {
             binding.etJudulBerita.setText(it.judul_berita)
             binding.etIsiBerita.setText(it.isi_berita)
-            
-            // Tampilkan Catatan Revisi melalui ID include 'layout_revisi'
             if (!it.catatan_penolakan.isNullOrEmpty()) {
                 binding.layoutRevisi.root.visibility = View.VISIBLE
                 binding.layoutRevisi.txtCatatanRevisi.text = it.catatan_penolakan
@@ -77,16 +75,10 @@ class DetailRevisiFragment : Fragment() {
     private fun simpanRevisi(): Boolean {
         val judul = binding.etJudulBerita.text.toString()
         val isi = binding.etIsiBerita.text.toString()
-
-        if (judul.isEmpty() || isi.isEmpty()) {
-            Toast.makeText(context, "Judul dan Isi wajib diisi!", Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        return if (controller.revisiBerita(beritaId, judul, isi, "default.jpg")) {
-            Toast.makeText(context, "Perubahan disimpan", Toast.LENGTH_SHORT).show()
-            true
+        return if (judul.isNotEmpty() && isi.isNotEmpty()) {
+            controller.revisiBerita(beritaId, judul, isi, "default.jpg")
         } else {
+            Toast.makeText(context, "Judul/Isi tidak boleh kosong!", Toast.LENGTH_SHORT).show()
             false
         }
     }

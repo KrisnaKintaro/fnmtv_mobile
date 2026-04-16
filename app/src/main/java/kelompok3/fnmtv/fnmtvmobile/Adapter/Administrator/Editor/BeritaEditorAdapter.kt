@@ -1,6 +1,7 @@
 package kelompok3.fnmtv.fnmtvmobile.Adapter.Administrator.Editor
 
 import android.graphics.Color
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kelompok3.fnmtv.fnmtvmobile.Database.Model.Berita
 import kelompok3.fnmtv.fnmtvmobile.R
+import java.io.File
 
 class BeritaEditorAdapter(
     private var listBerita: List<Berita>,
@@ -34,6 +36,18 @@ class BeritaEditorAdapter(
         holder.txtJudul.text = berita.judul_berita
         holder.txtTanggal.text = berita.created_at ?: "Baru saja"
         holder.txtStatus.text = berita.status_berita
+
+        // Logika Menampilkan Gambar di List Berita Saya
+        if (!berita.foto_thumbnail.isNullOrEmpty() && berita.foto_thumbnail != "default.jpg") {
+            val file = File(berita.foto_thumbnail)
+            if (file.exists()) {
+                holder.imgThumbnail.setImageURI(Uri.fromFile(file))
+            } else {
+                holder.imgThumbnail.setImageResource(android.R.drawable.ic_menu_gallery)
+            }
+        } else {
+            holder.imgThumbnail.setImageResource(android.R.drawable.ic_menu_gallery)
+        }
 
         val statusColor = when (berita.status_berita) {
             "Draft" -> "#9E9E9E"     // Abu-abu
