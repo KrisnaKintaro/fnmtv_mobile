@@ -15,8 +15,12 @@ import kelompok3.fnmtv.fnmtvmobile.Controller.Administrator.Admin.KategoriContro
 import kelompok3.fnmtv.fnmtvmobile.Database.Model.Kategori
 import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.databinding.FragmentManajemenKategoriBinding
+import kelompok3.fnmtv.fnmtvmobile.databinding.DialogTambahEditKategoriBinding
+import kelompok3.fnmtv.fnmtvmobile.databinding.DialogKonfirmasiHapusKategoriBinding
 
 class manajemenKategoriFragment : Fragment() {
+
+
 
     private var _binding: FragmentManajemenKategoriBinding? = null
     private val binding get() = _binding!!
@@ -72,21 +76,14 @@ class manajemenKategoriFragment : Fragment() {
     }
 
     private fun tampilkanDialogTambahEdit(kategori: Kategori?) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_tambah_edit_kategori, null)
-        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        val dialogBinding = DialogTambahEditKategoriBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        val tvTitle = dialogView.findViewById<TextView>(R.id.tv_dialog_title)
-        val etNamaKategori = dialogView.findViewById<EditText>(R.id.et_form_nama_kategori)
-        val etSlugKategori =
-            dialogView.findViewById<EditText>(R.id.et_form_slug_kategori) // Ambil ID Slug
-        val btnBatal = dialogView.findViewById<Button>(R.id.btn_batal_kategori)
-        val btnSimpan = dialogView.findViewById<Button>(R.id.btn_simpan_kategori)
 
         // LOGIKA AUTO-SLUG
         var isAutoGenerating = true
 
-        etNamaKategori.addTextChangedListener(object : TextWatcher {
+        dialogBinding.etFormNamaKategori.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
@@ -99,31 +96,31 @@ class manajemenKategoriFragment : Fragment() {
                         .trim()
                         .replace(Regex("\\s+"), "-") // Ganti spasi jadi strip
 
-                    etSlugKategori.setText(autoSlug)
+                    dialogBinding.etFormSlugKategori.setText(autoSlug)
                 }
             }
         })
 
         // Kalau user iseng ngetik manual di kolom Slug, matikan auto-generate sementara
         // Biar ketikan manual dia gak ketimpa sama Nama Kategori lagi
-        etSlugKategori.setOnFocusChangeListener { _, hasFocus ->
+        dialogBinding.etFormSlugKategori.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) isAutoGenerating = false
         }
 
         // Cek Mode (Edit atau Tambah)
         if (kategori != null) {
-            tvTitle.text = "Edit Kategori"
-            etNamaKategori.setText(kategori.nama_kategori)
-            etSlugKategori.setText(kategori.slug) // Tampilkan slug lama
+            dialogBinding.tvDialogTitle.text = "Edit Kategori"
+            dialogBinding.etFormNamaKategori.setText(kategori.nama_kategori)
+            dialogBinding.etFormSlugKategori.setText(kategori.slug) // Tampilkan slug lama
         } else {
-            tvTitle.text = "Tambah Kategori"
+            dialogBinding.tvDialogTitle.text = "Tambah Kategori"
         }
 
-        btnBatal.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnBatalKategori.setOnClickListener { dialog.dismiss() }
 
-        btnSimpan.setOnClickListener {
-            val inputNama = etNamaKategori.text.toString().trim()
-            val inputSlug = etSlugKategori.text.toString().trim()
+        dialogBinding.btnBatalKategori.setOnClickListener {
+            val inputNama = dialogBinding.etFormNamaKategori.text.toString().trim()
+            val inputSlug = dialogBinding.etFormSlugKategori.text.toString().trim()
 
             if (inputNama.isEmpty() || inputSlug.isEmpty()) {
                 Toast.makeText(requireContext(), "Semua field wajib diisi cuy!", Toast.LENGTH_SHORT)
@@ -162,16 +159,14 @@ class manajemenKategoriFragment : Fragment() {
 
     // --- FORM KONFIRMASI HAPUS ---
     private fun tampilkanDialogKonfirmasiHapus(kategori: Kategori) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_konfirmasi_hapus_kategori, null)
-        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        val dialogBinding = DialogKonfirmasiHapusKategoriBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        dialogView.findViewById<TextView>(R.id.tv_hapus_nama_kategori).text = kategori.nama_kategori
+        dialogBinding.tvHapusNamaKategori.text = kategori.nama_kategori
+        dialogBinding.btnBatalHapusKategori.setOnClickListener { dialog.dismiss() }
 
-        dialogView.findViewById<Button>(R.id.btn_batal_hapus_kategori)
-            .setOnClickListener { dialog.dismiss() }
-
-        dialogView.findViewById<Button>(R.id.btn_konfirmasi_hapus_kategori).setOnClickListener {
+        dialogBinding.btnKonfirmasiHapusKategori.findViewById<Button>(R.id.btn_konfirmasi_hapus_kategori).setOnClickListener {
             if (kategoriController.hapusKategori(kategori.id)) {
                 Toast.makeText(requireContext(), "Kategori musnah!", Toast.LENGTH_SHORT).show()
                 loadDataDariDatabase()

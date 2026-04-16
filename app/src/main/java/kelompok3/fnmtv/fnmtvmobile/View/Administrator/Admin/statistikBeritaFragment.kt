@@ -128,44 +128,61 @@ class statistikBeritaFragment : Fragment() {
 
     private fun renderHeatmap() {
         binding.gridHeatmap.removeAllViews()
-        binding.gridHeatmap.columnCount = 7 // Kunci! Paksa cuma 7 kolom (Minggu - Sabtu)
 
-        val data = controller.getHeatmapData() // Sekarang kembaliannya List<Int> isi 7 angka
-        val hariNames = arrayOf("Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab")
+        // Ambil data dinamis berdasarkan periode aktif
+        val data = controller.getHeatmapData(activePeriod)
 
-        // SIHIR RESPONSIVE: Ubah pixel mentah jadi DP biar nggak offside di layar sempit
+        // Set jumlah kolom otomatis biar tampilannya proporsional
+        binding.gridHeatmap.columnCount = when (activePeriod) {
+            "30 Hari" -> 7 // Biar bentuknya persis kayak kalender mingguan
+            "1 Tahun" -> 6 // Biar pas 2 baris (6 bulan atas, 6 bulan bawah)
+            "Semua" -> 4 // 4 kolom biar kotak Tahun kelihatan agak besar dan elegan
+            else -> 7 // Hari ini & 7 Hari (Senin - Minggu)
+        }
+
+        // Konversi ukuran ke DP biar responsive
         val sizeInDp = (35 * resources.displayMetrics.density).toInt()
         val marginInDp = (4 * resources.displayMetrics.density).toInt()
 
-        // Render Header Hari
-        for (name in hariNames) {
-            val tv = TextView(context).apply {
-                text = name
-                textSize = 10f
+        // Looping data yang dapet dari Controller
+        for ((label, qty) in data) {
+
+            // Bikin container vertikal buat nampung Teks di atas Kotak
+            val container = android.widget.LinearLayout(context).apply {
+                orientation = android.widget.LinearLayout.VERTICAL
                 gravity = Gravity.CENTER
-                setPadding(marginInDp, marginInDp, marginInDp, marginInDp)
-            }
-            binding.gridHeatmap.addView(tv)
-        }
-
-        // Render Kotak Heatmap (FIX: Langsung pakai 'qty' dari perulangan)
-        for (qty in data) {
-            val color = when {
-                qty == 0 -> Color.parseColor("#EEEEEE")
-                qty < 3 -> Color.parseColor("#FFCDD2")
-                qty < 6 -> Color.parseColor("#E57373")
-                else -> Color.parseColor("#D32F2F") // Makin merah
-            }
-
-            val box = View(context).apply {
                 layoutParams = GridLayout.LayoutParams().apply {
-                    width = sizeInDp
-                    height = sizeInDp
                     setMargins(marginInDp, marginInDp, marginInDp, marginInDp)
                 }
+            }
+
+            // Bikin Label (Tanggal / Hari / Bulan)
+            val tvLabel = TextView(context).apply {
+                text = label
+                textSize = 9f
+                gravity = Gravity.CENTER
+                setTextColor(Color.parseColor("#7A7570"))
+                setPadding(0, 0, 0, 4)
+            }
+            container.addView(tvLabel)
+
+            // Tentukan level kemerahan kotak
+            val color = when {
+                qty == 0 -> Color.parseColor("#EEEEEE") // Abu-abu kalau kosong
+                qty < 3 -> Color.parseColor("#FFCDD2") // Merah muda
+                qty < 6 -> Color.parseColor("#E57373") // Merah sedang
+                else -> Color.parseColor("#D32F2F")    // Merah darah kalau viral
+            }
+
+            // Bikin Kotak Heatmap
+            val box = View(context).apply {
+                layoutParams = android.widget.LinearLayout.LayoutParams(sizeInDp, sizeInDp)
                 setBackgroundColor(color)
             }
-            binding.gridHeatmap.addView(box)
+            container.addView(box)
+
+            // Masukin container ke dalam Grid
+            binding.gridHeatmap.addView(container)
         }
     }
 

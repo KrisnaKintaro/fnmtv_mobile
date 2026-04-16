@@ -1,13 +1,14 @@
 package kelompok3.fnmtv.fnmtvmobile.Adapter.Administrator.Admin
 
 import android.content.Context
-import android.view.ContextThemeWrapper // PENTING BUAT THEME POPUP
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.Gravity
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.PopupMenu
+import kelompok3.fnmtv.fnmtvmobile.databinding.ItemUserBinding
 import kelompok3.fnmtv.fnmtvmobile.Database.Model.User
 import kelompok3.fnmtv.fnmtvmobile.R
 
@@ -28,30 +29,37 @@ class manajemenUserAdapter(
     override fun getItemId(position: Int): Long = users[position].id.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_user, parent, false)
+        val binding: ItemUserBinding
+        val view: View
+
+        if (convertView == null) {
+            // Kalau tampilan belum ada, inflate pakai binding
+            binding = ItemUserBinding.inflate(LayoutInflater.from(context), parent, false)
+            view = binding.root
+            view.tag = binding // Simpan binding di "saku" view-nya
+        } else {
+            // Kalau tampilan udah ada (bekas scroll), ambil lagi binding dari "saku"
+            view = convertView
+            binding = view.tag as ItemUserBinding
+        }
+
         val user = users[position]
 
-        val txtNama = view.findViewById<TextView>(R.id.txt_nama_user)
-        val txtRole = view.findViewById<TextView>(R.id.txt_role_user)
-        val txtInisialRole = view.findViewById<TextView>(R.id.txt_inisial_role) // Inisial Role
-        val btnOpsi = view.findViewById<ImageButton>(R.id.btn_opsi_user)
-
-        txtNama.text = user.username
-        txtRole.text = "Role: ${user.role} | Status: ${user.status}"
+        binding.txtNamaUser.text = user.username
+        binding.txtRoleUser.text = "Role: ${user.role} | Status: ${user.status}"
 
         // Set Inisial Role (Ambil huruf pertama dari Role)
-        txtInisialRole.text = if (user.role.isNotEmpty()) user.role.substring(0, 1).uppercase() else "?"
+        binding.txtInisialRole.text = if (user.role.isNotEmpty()) user.role.substring(0, 1).uppercase() else "?"
 
         // Listener buat PopupMenu dengan Theme
-        btnOpsi.setOnClickListener {
-            // GANTI BAGIAN INI: Arahkan ke style RedPopupMenu buatan lu
+        binding.btnOpsiUser.setOnClickListener {
+            // Arahkan ke style RedPopupMenu
             val wrapper = ContextThemeWrapper(context, R.style.RedPopupMenu)
-            val popupMenu = PopupMenu(wrapper, btnOpsi, Gravity.END)
+            val popupMenu = PopupMenu(wrapper, binding.btnOpsiUser, Gravity.END)
 
             popupMenu.menuInflater.inflate(R.menu.menu_opsi_user, popupMenu.menu)
 
-            // 2. TRIK KHUSUS: Munculkan Ikon di PopupMenu
-            // Ini menggunakan 'Reflection' biar ic_edit & ic_hapus kelihatan
+            // TRIK KHUSUS: Munculkan Ikon di PopupMenu pakai 'Reflection'
             try {
                 val fields = popupMenu.javaClass.declaredFields
                 for (field in fields) {
@@ -68,7 +76,7 @@ class manajemenUserAdapter(
                 e.printStackTrace()
             }
 
-            // 3. Handle klik itemnya sesuai ID di XML
+            // Handle klik itemnya sesuai ID di XML
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.menu_edit_user -> {

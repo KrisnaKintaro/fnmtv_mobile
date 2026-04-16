@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.TextView
+// <--- 1. IMPORT KELAS BINDING-NYA --->
+import kelompok3.fnmtv.fnmtvmobile.databinding.ItemTopBeritaBinding
 import kelompok3.fnmtv.fnmtvmobile.Database.Model.Berita
-import java.text.NumberFormat
-import java.util.*
 
 class TopBeritaAdapter(
     private val context: Context,
@@ -20,24 +19,23 @@ class TopBeritaAdapter(
     override fun getItemId(position: Int): Long = beritas[position].id.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view = convertView ?: LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false)
+        // <--- 2. SETUP VIEWBINDING (ViewHolder Pattern) --->
+        val binding: ItemTopBeritaBinding
+        val view: View
+
+        if (convertView == null) {
+            binding = ItemTopBeritaBinding.inflate(LayoutInflater.from(context), parent, false)
+            view = binding.root
+            view.tag = binding
+        } else {
+            view = convertView
+            binding = view.tag as ItemTopBeritaBinding
+        }
+
         val berita = beritas[position]
 
-        val txtJudul = view.findViewById<TextView>(android.R.id.text1)
-        val txtDetail = view.findViewById<TextView>(android.R.id.text2)
-
-        // Baris 1: Judul Berita
-        txtJudul.text = "${position + 1}. ${berita.judul_berita}"
-        txtJudul.textSize = 14f
-        txtJudul.setPadding(0, 8, 0, 4)
-        txtJudul.setTextColor(context.resources.getColor(android.R.color.black))
-
-        // Baris 2: Rincian Data Real (View | Komentar | Reaksi)
-        // Kita panggil properti nama_penulis yang sudah diisi format string di Controller tadi
-        txtDetail.text = berita.nama_penulis
-        txtDetail.textSize = 12f
-        txtDetail.setPadding(0, 0, 0, 8)
-        txtDetail.setTextColor(context.resources.getColor(android.R.color.darker_gray))
+        binding.txtJudulTop.text = "${position + 1}. ${berita.judul_berita}"
+        binding.txtDetailTop.text = berita.nama_penulis // Mengandung rincian View | Komen | Reaksi
 
         return view
     }

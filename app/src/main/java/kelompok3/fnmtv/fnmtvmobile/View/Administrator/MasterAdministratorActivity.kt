@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -20,6 +21,7 @@ import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Editor.CreateBeritaFragmen
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Editor.DetailRevisiFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Editor.ListDraftFragment
 
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Redaksi.MonitoringBeritaFragment
 
 class MasterAdministratorActivity : AppCompatActivity() {
 
@@ -96,6 +98,17 @@ class MasterAdministratorActivity : AppCompatActivity() {
             }
 
             R.id.action_logout -> {
+                // --- HANCURKAN SESI LOGIN DI SINI ---
+                val sharedPref = getSharedPreferences("SESSION_FNMTV", MODE_PRIVATE)
+                with(sharedPref.edit()) {
+                    clear() // Bersihin semua data (IS_LOGGED_IN, USER_ROLE, dll)
+                    apply()
+                }
+
+                // Kasih notif ke user
+                Toast.makeText(this, "Berhasil Logout!", Toast.LENGTH_SHORT).show()
+
+                // Baru lempar balik ke Login
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
                 true
@@ -192,18 +205,21 @@ class MasterAdministratorActivity : AppCompatActivity() {
     }
 
     private fun setupRoleRedaksi() {
-        applyUIConfig("Panel Redaksi", R.menu.bottom_menu_redaksi, lockSidebar = true)
-        // replaceFragment(RedaksiDashboardFragment())
+        applyUIConfig("Antrean Verifikasi", R.menu.bottom_menu_redaksi, lockSidebar = true)
+
+        replaceFragment(MonitoringBeritaFragment.newInstance("Antrean"))
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_verifikasi -> {
                     supportActionBar?.title = "Antrean Verifikasi"
+                    replaceFragment(MonitoringBeritaFragment.newInstance("Antrean"))
 
                 }
 
                 R.id.nav_berita_terbit -> {
                     supportActionBar?.title = "Riwayat Publikasi"
+                    replaceFragment(MonitoringBeritaFragment.newInstance("Terbit"))
                 }
             }
             true
