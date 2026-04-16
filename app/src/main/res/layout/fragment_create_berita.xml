@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_title_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tulis Berita"
+            android:textColor="#1A1A1A"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <include
+            android:id="@+id/layout_revisi"
+            layout="@layout/layout_catatan_revisi" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E0DDD6"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFFFFF"
+                android:padding="16dp">
+
+                <EditText
+                    android:id="@+id/et_judul_berita"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Judul Berita"
+                    android:background="@drawable/bg_input_rounded"
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <Spinner
+                    android:id="@+id/spin_kategori"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/bg_input_rounded"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/et_isi_berita"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:hint="Isi Berita"
+                    android:background="@drawable/bg_input_rounded"
+                    android:padding="12dp"
+                    android:gravity="top"
+                    android:layout_marginBottom="24dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_simpan_draft"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:text="Simpan Draft"
+                        android:backgroundTint="#7A7570"
+                        android:layout_marginEnd="8dp" />
+
+                    <Button
+                        android:id="@+id/btn_kirim_redaksi"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:text="Kirim"
+                        android:backgroundTint="#CC0000" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

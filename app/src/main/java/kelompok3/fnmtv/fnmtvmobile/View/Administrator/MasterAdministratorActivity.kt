@@ -16,6 +16,10 @@ import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.statistikBeritaFragm
 import kelompok3.fnmtv.fnmtvmobile.View.Auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterAdministratorBinding
 import androidx.appcompat.app.AppCompatDelegate
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Editor.CreateBeritaFragment
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Editor.DetailRevisiFragment
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Editor.ListDraftFragment
+
 
 class MasterAdministratorActivity : AppCompatActivity() {
 
@@ -166,17 +170,21 @@ class MasterAdministratorActivity : AppCompatActivity() {
     }
 
     private fun setupRoleEditor() {
-        applyUIConfig("Editor Panel", R.menu.bottom_menu_editor, lockSidebar = true)
-        // replaceFragment(EditorDashboardFragment())
+        applyUIConfig("Daftar Berita Saya", R.menu.bottom_menu_editor, lockSidebar = true)
+        
+        // Tampilkan List Berita sebagai halaman awal Editor
+        replaceFragment(ListDraftFragment())
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_tulis_berita -> {
                     supportActionBar?.title = "Tulis Berita Baru"
+                    replaceFragment(CreateBeritaFragment())
                 }
 
                 R.id.nav_berita_saya -> {
                     supportActionBar?.title = "Daftar Berita Saya"
+                    replaceFragment(ListDraftFragment())
                 }
             }
             true
