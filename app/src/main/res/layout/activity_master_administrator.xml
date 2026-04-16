@@ -4,7 +4,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_cream">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:id="@+id/bottom_nav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white_pure"
+            android:background="#FFFFFF"
             app:itemIconTint="@color/red_primary"
             app:itemTextColor="@color/text_main"
             app:labelVisibilityMode="selected"
@@ -37,5 +37,3 @@
         app:menu="@menu/sidebar_menu_admin" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
-
-<!--malas lah ga bisa git add tai-->

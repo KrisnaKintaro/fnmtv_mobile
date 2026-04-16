@@ -50,14 +50,19 @@
                     android:hint="Judul Berita"
                     android:background="@drawable/bg_input_rounded"
                     android:padding="12dp"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp"
+                    android:popupBackground="@android:color/white"
+                    android:backgroundTint="@android:color/white"/>
+
 
                 <Spinner
                     android:id="@+id/spin_kategori"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:background="@drawable/bg_input_rounded"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp"
+                    android:popupBackground="@android:color/white"
+                    android:backgroundTint="@android:color/white"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -108,7 +113,9 @@
                     android:background="@drawable/bg_input_rounded"
                     android:padding="12dp"
                     android:gravity="top"
-                    android:layout_marginBottom="24dp"/>
+                    android:layout_marginBottom="24dp"
+                    android:popupBackground="@android:color/white"
+                    android:backgroundTint="@android:color/white"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
