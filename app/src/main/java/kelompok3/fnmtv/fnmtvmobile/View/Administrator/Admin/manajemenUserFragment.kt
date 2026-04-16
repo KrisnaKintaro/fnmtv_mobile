@@ -14,7 +14,8 @@ import kelompok3.fnmtv.fnmtvmobile.Controller.Administrator.Admin.UserController
 import kelompok3.fnmtv.fnmtvmobile.Database.Model.User
 import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.databinding.FragmentManajemenUserBinding
-import java.util.Calendar
+import kelompok3.fnmtv.fnmtvmobile.databinding.DialogTambahEditUserBinding
+import kelompok3.fnmtv.fnmtvmobile.databinding.DialogKonfirmasiHapusBinding
 
 class manajemenUserFragment : Fragment() {
 
@@ -100,45 +101,34 @@ class manajemenUserFragment : Fragment() {
 
     // --- FUNGSI FORM TAMBAH & EDIT (CRUD UTAMA) ---
     private fun tampilkanDialogTambahEdit(user: User?) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_tambah_edit_user, null)
-        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        val dialogBinding = DialogTambahEditUserBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val tvTitle = dialogView.findViewById<TextView>(R.id.tv_dialog_title)
-        val etUsername = dialogView.findViewById<EditText>(R.id.et_form_username)
-        val etEmail = dialogView.findViewById<EditText>(R.id.et_form_email)
-        val lblPassword = dialogView.findViewById<TextView>(R.id.lbl_password_user)
-        val etPassword = dialogView.findViewById<EditText>(R.id.et_form_password) // <--- TANGKAP ID PASSWORD
-        val spinRole = dialogView.findViewById<Spinner>(R.id.spin_form_role)
-        val rbAktif = dialogView.findViewById<RadioButton>(R.id.rb_aktif)
-        val rbNonaktif = dialogView.findViewById<RadioButton>(R.id.rb_nonaktif)
-        val btnSimpan = dialogView.findViewById<Button>(R.id.btn_simpan_user)
-        val btnBatal = dialogView.findViewById<Button>(R.id.btn_batal_user)
-
         val roles = arrayOf("Admin", "Redaksi", "Editor", "Viewer")
-        spinRole.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, roles)
+        dialogBinding.spinFormRole.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, roles)
 
         // Isi form otomatis kalau mode Edit
         if (user != null) {
-            tvTitle.text = "Edit Pengguna"
-            etUsername.setText(user.username)
-            etEmail.setText(user.email)
+            dialogBinding.tvDialogTitle.text = "Edit Pengguna"
+            dialogBinding.etFormUsername.setText(user.username)
+            dialogBinding.etFormEmail.setText(user.email)
             // Password sengaja gak di-setText biar kosong, kalau diisi berarti user mau ganti password
-            lblPassword.text = "Password (Kosongi jika tak ingin diubah)"
-            if (user.status == "Aktif") rbAktif.isChecked = true else rbNonaktif.isChecked = true
+            dialogBinding.lblPasswordUser.text = "Password (Kosongi jika tak ingin diubah)"
+            if (user.status == "Aktif") dialogBinding.rbAktif.isChecked = true else dialogBinding.rbNonaktif.isChecked = true
         } else {
-            tvTitle.text = "Tambah Pengguna Baru"
-            rbAktif.isChecked = true
+            dialogBinding.tvDialogTitle.text = "Tambah Pengguna Baru"
+            dialogBinding.rbAktif.isChecked = true
         }
 
-        btnBatal.setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnBatalUser.setOnClickListener { dialog.dismiss() }
 
-        btnSimpan.setOnClickListener {
-            val inputUsername = etUsername.text.toString().trim()
-            val inputEmail = etEmail.text.toString().trim()
-            val inputPassword = etPassword.text.toString().trim() // <--- AMBIL TEKS PASSWORD
-            val inputRole = spinRole.selectedItem.toString()
-            val inputStatus = if (rbAktif.isChecked) "Aktif" else "Nonaktif"
+        dialogBinding.btnSimpanUser.setOnClickListener {
+            val inputUsername = dialogBinding.etFormUsername.text.toString().trim()
+            val inputEmail = dialogBinding.etFormEmail.text.toString().trim()
+            val inputPassword = dialogBinding.etFormPassword.text.toString().trim() // <--- AMBIL TEKS PASSWORD
+            val inputRole = dialogBinding.spinFormRole.selectedItem.toString()
+            val inputStatus = if (dialogBinding.rbAktif.isChecked) "Aktif" else "Nonaktif"
 
             // Validasi Dasar (Username & Email gak boleh kosong)
             if (inputUsername.isEmpty() || inputEmail.isEmpty()) {
@@ -180,16 +170,16 @@ class manajemenUserFragment : Fragment() {
 
     // --- FUNGSI HAPUS ---
     private fun tampilkanDialogKonfirmasiHapus(user: User) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_konfirmasi_hapus, null)
-        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        val dialogBinding = DialogKonfirmasiHapusBinding.inflate(layoutInflater)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        dialogView.findViewById<TextView>(R.id.tv_hapus_username).text = user.username
-        dialogView.findViewById<TextView>(R.id.tv_hapus_role).text = "Role: ${user.role}"
+        dialogBinding.tvHapusUsername.text = user.username
+        dialogBinding.tvHapusRole.text = "Role: ${user.role}"
 
-        dialogView.findViewById<Button>(R.id.btn_batal_hapus).setOnClickListener { dialog.dismiss() }
+        dialogBinding.btnBatalHapus.setOnClickListener { dialog.dismiss() }
 
-        dialogView.findViewById<Button>(R.id.btn_konfirmasi_hapus).setOnClickListener {
+        dialogBinding.btnKonfirmasiHapus.setOnClickListener {
             if (userController.hapusUser(user.id)) {
                 Toast.makeText(requireContext(), "${user.username} musnah!", Toast.LENGTH_SHORT).show()
                 loadDataDariDatabase()

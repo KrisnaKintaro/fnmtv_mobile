@@ -7,9 +7,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageButton
 import android.widget.PopupMenu
-import android.widget.TextView
+import kelompok3.fnmtv.fnmtvmobile.databinding.ItemKategoriBinding
 import kelompok3.fnmtv.fnmtvmobile.Database.Model.Kategori
 import kelompok3.fnmtv.fnmtvmobile.R
 
@@ -30,21 +29,31 @@ class manajemenKategoriAdapter(
     override fun getItemId(position: Int): Long = kategoris[position].id.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_kategori, parent, false)
+        val binding: ItemKategoriBinding
+        val view: View
+
+        if (convertView == null) {
+            // Kalau tampilan belum ada, inflate pakai binding
+            binding = ItemKategoriBinding.inflate(LayoutInflater.from(context), parent, false)
+            view = binding.root
+            view.tag = binding // Simpan binding di "saku" (tag) view-nya
+        } else {
+            // Kalau tampilan udah ada (bekas scroll), ambil lagi binding dari "saku"
+            view = convertView
+            binding = view.tag as ItemKategoriBinding
+        }
+
         val kategori = kategoris[position]
 
-        val txtNama = view.findViewById<TextView>(R.id.txt_nama_kategori)
-        val txtInisial = view.findViewById<TextView>(R.id.txt_inisial_kategori)
-        val btnOpsi = view.findViewById<ImageButton>(R.id.btn_opsi_kategori)
+        binding.txtNamaKategori.text = kategori.nama_kategori
+        binding.txtInisialKategori.text =
+            if (kategori.nama_kategori.isNotEmpty()) kategori.nama_kategori.take(1)
+                .uppercase() else "#"
 
-        txtNama.text = kategori.nama_kategori
-        // Ambil huruf pertama buat jadi ikon bulat
-        txtInisial.text = if (kategori.nama_kategori.isNotEmpty()) kategori.nama_kategori.take(1).uppercase() else "#"
-
-        btnOpsi.setOnClickListener {
+        binding.btnOpsiKategori.setOnClickListener {
             // Panggil popup dengan Theme Merah FNM dan paksa nempel kanan bawah
             val wrapper = ContextThemeWrapper(context, R.style.RedPopupMenu)
-            val popupMenu = PopupMenu(wrapper, btnOpsi, Gravity.END)
+            val popupMenu = PopupMenu(wrapper, binding.btnOpsiKategori, Gravity.END)
 
             popupMenu.menuInflater.inflate(R.menu.menu_opsi_kategori, popupMenu.menu)
 
@@ -56,7 +65,10 @@ class manajemenKategoriAdapter(
                         field.isAccessible = true
                         val menuPopupHelper = field.get(popupMenu)
                         val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
-                        val setForceIcons = classPopupHelper.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
+                        val setForceIcons = classPopupHelper.getMethod(
+                            "setForceShowIcon",
+                            Boolean::class.javaPrimitiveType
+                        )
                         setForceIcons.invoke(menuPopupHelper, true)
                         break
                     }
@@ -67,8 +79,14 @@ class manajemenKategoriAdapter(
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.menu_edit_kategori -> { onEditClick(kategori); true }
-                    R.id.menu_hapus_kategori -> { onDeleteClick(kategori); true }
+                    R.id.menu_edit_kategori -> {
+                        onEditClick(kategori); true
+                    }
+
+                    R.id.menu_hapus_kategori -> {
+                        onDeleteClick(kategori); true
+                    }
+
                     else -> false
                 }
             }

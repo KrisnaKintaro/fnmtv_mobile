@@ -13,25 +13,23 @@ import kelompok3.fnmtv.fnmtvmobile.Database.Migration.DatabaseHelper
 import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.MasterAdministratorActivity
 import kelompok3.fnmtv.fnmtvmobile.View.Viewers.MasterViewersActivity
+import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) // Paksa Light Mode
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
-        val etEmail = findViewById<EditText>(R.id.et_login_email)
-        val etPassword = findViewById<EditText>(R.id.et_login_password)
-        val btnLogin = findViewById<Button>(R.id.btn_login)
-        val tvLupaPassword = findViewById<TextView>(R.id.tv_lupa_password)
-        val tvKeRegister = findViewById<TextView>(R.id.tv_ke_register)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val dbHelper = DatabaseHelper(this)
 
-        btnLogin.setOnClickListener {
-            val email = etEmail.text.toString().trim()
-            val password = etPassword.text.toString().trim()
+        binding.btnLogin.setOnClickListener {
+            val email = binding.etLoginEmail.text.toString().trim()
+            val password = binding.etLoginPassword.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Email dan Password wajib diisi!", Toast.LENGTH_SHORT).show()
@@ -62,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
 
                     Toast.makeText(this, "Selamat datang, $username!", Toast.LENGTH_SHORT).show()
 
-                    // --- PERBAIKAN ROUTING (JALUR PINTAR) ---
+                    // Routing
                     if (role == "Viewer") {
                         // Kalau masyarakat biasa (hasil Register), lempar ke halaman Viewers
                         val intent = Intent(this, MasterViewersActivity::class.java)
@@ -80,11 +78,11 @@ class LoginActivity : AppCompatActivity() {
             cursor.close()
         }
 
-        tvKeRegister.setOnClickListener {
+        binding.tvKeRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
-        tvLupaPassword.setOnClickListener {
+        binding.tvLupaPassword.setOnClickListener {
             startActivity(Intent(this, LupaPasswordActivity::class.java))
         }
     }
