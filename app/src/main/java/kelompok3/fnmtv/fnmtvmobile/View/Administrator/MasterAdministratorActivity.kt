@@ -16,6 +16,7 @@ import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.statistikBeritaFragm
 import kelompok3.fnmtv.fnmtvmobile.View.Auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterAdministratorBinding
 import androidx.appcompat.app.AppCompatDelegate
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Redaksi.MonitoringBeritaFragment
 
 class MasterAdministratorActivity : AppCompatActivity() {
 
@@ -184,18 +185,21 @@ class MasterAdministratorActivity : AppCompatActivity() {
     }
 
     private fun setupRoleRedaksi() {
-        applyUIConfig("Panel Redaksi", R.menu.bottom_menu_redaksi, lockSidebar = true)
-        // replaceFragment(RedaksiDashboardFragment())
+        applyUIConfig("Antrean Verifikasi", R.menu.bottom_menu_redaksi, lockSidebar = true)
+
+        replaceFragment(MonitoringBeritaFragment.newInstance("Antrean"))
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_verifikasi -> {
                     supportActionBar?.title = "Antrean Verifikasi"
+                    replaceFragment(MonitoringBeritaFragment.newInstance("Antrean"))
 
                 }
 
                 R.id.nav_berita_terbit -> {
                     supportActionBar?.title = "Riwayat Publikasi"
+                    replaceFragment(MonitoringBeritaFragment.newInstance("Terbit"))
                 }
             }
             true
