@@ -8,7 +8,7 @@ import kelompok3.fnmtv.fnmtvmobile.Database.Model.Berita
 class EditorController(context: Context) {
     private val dbHelper = DatabaseHelper(context)
 
-    // Simpan berita (Draft/Pending)
+    // Menyimpan berita baru
     fun simpanBerita(berita: Berita): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -30,7 +30,7 @@ class EditorController(context: Context) {
         return updateStatusBerita(beritaId, "Pending")
     }
 
-    // Ambil daftar berita milik saya
+    // Ambil daftar berita milik editor
     fun getBeritaSaya(userId: Int): List<Berita> {
         val listBerita = mutableListOf<Berita>()
         val db = dbHelper.readableDatabase
