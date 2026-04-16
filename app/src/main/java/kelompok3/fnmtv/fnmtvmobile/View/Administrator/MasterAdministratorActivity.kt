@@ -46,8 +46,9 @@ class MasterAdministratorActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Role
-        var roleUser = intent.getStringExtra("ROLE_USER") ?: "Admin"
-        roleUser = "Admin"
+        val sharedPref = getSharedPreferences("SESSION_FNMTV", MODE_PRIVATE)
+        val roleUser = sharedPref.getString("USER_ROLE", "Viewer") ?: "Viewer"
+        // roleUser = "Admin"
 
         // 2. Panggil Router yang Rapi (Nggak ada lagi if-else numpuk di sini)
         when (roleUser) {
