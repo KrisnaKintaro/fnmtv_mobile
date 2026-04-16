@@ -1,21 +1,91 @@
 package kelompok3.fnmtv.fnmtvmobile.View.Auth
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.appcompat.app.AppCompatDelegate
+import kelompok3.fnmtv.fnmtvmobile.Database.Migration.DatabaseHelper
 import kelompok3.fnmtv.fnmtvmobile.R
+import kelompok3.fnmtv.fnmtvmobile.View.Administrator.MasterAdministratorActivity
+import kelompok3.fnmtv.fnmtvmobile.View.Viewers.MasterViewersActivity
 
 class LoginActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) // Paksa Light Mode
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_login)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val etEmail = findViewById<EditText>(R.id.et_login_email)
+        val etPassword = findViewById<EditText>(R.id.et_login_password)
+        val btnLogin = findViewById<Button>(R.id.btn_login)
+        val tvLupaPassword = findViewById<TextView>(R.id.tv_lupa_password)
+        val tvKeRegister = findViewById<TextView>(R.id.tv_ke_register)
+
+        val dbHelper = DatabaseHelper(this)
+
+        btnLogin.setOnClickListener {
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Email dan Password wajib diisi!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery("SELECT * FROM users WHERE email = ? AND password = ?", arrayOf(email, password))
+
+            if (cursor.moveToFirst()) {
+                val status = cursor.getString(cursor.getColumnIndexOrThrow("status"))
+                val role = cursor.getString(cursor.getColumnIndexOrThrow("role"))
+                val username = cursor.getString(cursor.getColumnIndexOrThrow("username"))
+                val userId = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+
+                if (status == "Nonaktif") {
+                    Toast.makeText(this, "Akun Anda dinonaktifkan Admin!", Toast.LENGTH_LONG).show()
+                } else {
+                    // Simpan sesi ke SharedPreferences
+                    val sharedPref = getSharedPreferences("SESSION_FNMTV", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        putBoolean("IS_LOGGED_IN", true)
+                        putInt("USER_ID", userId)
+                        putString("USER_ROLE", role)
+                        putString("USERNAME", username)
+                        apply()
+                    }
+
+                    Toast.makeText(this, "Selamat datang, $username!", Toast.LENGTH_SHORT).show()
+
+                    // --- PERBAIKAN ROUTING (JALUR PINTAR) ---
+                    if (role == "Viewer") {
+                        // Kalau masyarakat biasa (hasil Register), lempar ke halaman Viewers
+                        val intent = Intent(this, MasterViewersActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        // Kalau tim internal (Admin, Editor, Redaksi), lempar ke Dashboard Admin
+                        val intent = Intent(this, MasterAdministratorActivity::class.java)
+                        startActivity(intent)
+                    }
+                    finish() // Tutup login activity
+                }
+            } else {
+                Toast.makeText(this, "Email atau Password salah!", Toast.LENGTH_SHORT).show()
+            }
+            cursor.close()
+        }
+
+        tvKeRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        tvLupaPassword.setOnClickListener {
+            startActivity(Intent(this, LupaPasswordActivity::class.java))
         }
     }
 }
