@@ -120,7 +120,7 @@
             android:layout_width="match_parent" android:layout_height="wrap_content"
             app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="#E0DDD6" app:strokeWidth="1dp" android:layout_marginBottom="16dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="#FFFFFF" android:padding="16dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Heatmap Jadwal Publikasi Terbaik Mingguan" android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" android:layout_marginBottom="12dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Heatmap Jadwal Publikasi" android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" android:layout_marginBottom="12dp"/>
                 <GridLayout android:id="@+id/gridHeatmap" android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="8" android:useDefaultMargins="true"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
