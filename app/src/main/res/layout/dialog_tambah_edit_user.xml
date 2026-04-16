@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_rounded"
     android:padding="24dp">
+
     <TextView
         android:id="@+id/tv_dialog_title"
         android:layout_width="wrap_content"
@@ -78,6 +78,31 @@
         app:layout_constraintTop_toBottomOf="@id/lbl_email" />
 
     <TextView
+        android:id="@+id/lbl_password_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Password"
+        android:textColor="#1A1A1A"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_form_email" />
+
+    <EditText
+        android:id="@+id/et_form_password"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="6dp"
+        android:background="#F5F4F0"
+        android:hint="Masukkan password..."
+        android:inputType="textPassword"
+        android:paddingHorizontal="12dp"
+        android:textColor="#1A1A1A"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/lbl_password_user" />
+
+    <TextView
         android:id="@+id/lbl_role"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,7 +112,7 @@
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_form_email" />
+        app:layout_constraintTop_toBottomOf="@id/et_form_password" />
 
     <Spinner
         android:id="@+id/spin_form_role"
@@ -143,15 +168,15 @@
         android:layout_marginTop="32dp"
         android:orientation="horizontal"
         android:weightSum="2"
-        app:layout_constraintTop_toBottomOf="@id/rg_status"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_status">
 
         <Button
             android:id="@+id/btn_batal_user"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="1"
             android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:backgroundTint="#E0DDD6"
             android:text="Batal"
             android:textColor="#1A1A1A"
@@ -161,8 +186,8 @@
             android:id="@+id/btn_simpan_user"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="1"
             android:layout_marginStart="8dp"
+            android:layout_weight="1"
             android:backgroundTint="#CC0000"
             android:text="Simpan Data"
             android:textColor="#FFFFFF"

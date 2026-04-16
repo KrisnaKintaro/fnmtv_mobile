@@ -107,6 +107,8 @@ class manajemenUserFragment : Fragment() {
         val tvTitle = dialogView.findViewById<TextView>(R.id.tv_dialog_title)
         val etUsername = dialogView.findViewById<EditText>(R.id.et_form_username)
         val etEmail = dialogView.findViewById<EditText>(R.id.et_form_email)
+        val lblPassword = dialogView.findViewById<TextView>(R.id.lbl_password_user)
+        val etPassword = dialogView.findViewById<EditText>(R.id.et_form_password) // <--- TANGKAP ID PASSWORD
         val spinRole = dialogView.findViewById<Spinner>(R.id.spin_form_role)
         val rbAktif = dialogView.findViewById<RadioButton>(R.id.rb_aktif)
         val rbNonaktif = dialogView.findViewById<RadioButton>(R.id.rb_nonaktif)
@@ -121,7 +123,8 @@ class manajemenUserFragment : Fragment() {
             tvTitle.text = "Edit Pengguna"
             etUsername.setText(user.username)
             etEmail.setText(user.email)
-            spinRole.setSelection(roles.indexOf(user.role).takeIf { it >= 0 } ?: 0)
+            // Password sengaja gak di-setText biar kosong, kalau diisi berarti user mau ganti password
+            lblPassword.text = "Password (Kosongi jika tak ingin diubah)"
             if (user.status == "Aktif") rbAktif.isChecked = true else rbNonaktif.isChecked = true
         } else {
             tvTitle.text = "Tambah Pengguna Baru"
@@ -133,17 +136,25 @@ class manajemenUserFragment : Fragment() {
         btnSimpan.setOnClickListener {
             val inputUsername = etUsername.text.toString().trim()
             val inputEmail = etEmail.text.toString().trim()
+            val inputPassword = etPassword.text.toString().trim() // <--- AMBIL TEKS PASSWORD
             val inputRole = spinRole.selectedItem.toString()
             val inputStatus = if (rbAktif.isChecked) "Aktif" else "Nonaktif"
 
+            // Validasi Dasar (Username & Email gak boleh kosong)
             if (inputUsername.isEmpty() || inputEmail.isEmpty()) {
-                Toast.makeText(requireContext(), "Semua field wajib diisi cuy!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Username dan Email wajib diisi cuy!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (user == null) {
                 // LOGIKA TAMBAH (CREATE)
-                val newUser = User(0, inputUsername, inputEmail, inputRole, inputStatus, "12345") // pass default
+                // Kalau tambah baru, Password wajib diisi dong!
+                if (inputPassword.isEmpty()) {
+                    Toast.makeText(requireContext(), "Password wajib diisi untuk User baru!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val newUser = User(0, inputUsername, inputEmail, inputRole, inputStatus, inputPassword)
                 val sukses = userController.tambahUser(newUser)
                 if (sukses) {
                     Toast.makeText(requireContext(), "User baru berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
@@ -152,7 +163,10 @@ class manajemenUserFragment : Fragment() {
                 }
             } else {
                 // LOGIKA EDIT (UPDATE)
-                val updatedUser = User(user.id, inputUsername, inputEmail, inputRole, inputStatus, user.password)
+                // Kalau password dikosongin, berarti pakai password lama. Kalau diisi, pakai password baru.
+                val finalPassword = if (inputPassword.isNotEmpty()) inputPassword else user.password
+
+                val updatedUser = User(user.id, inputUsername, inputEmail, inputRole, inputStatus, finalPassword)
                 val sukses = userController.editUser(updatedUser)
                 if (sukses) {
                     Toast.makeText(requireContext(), "Data berhasil diperbarui!", Toast.LENGTH_SHORT).show()

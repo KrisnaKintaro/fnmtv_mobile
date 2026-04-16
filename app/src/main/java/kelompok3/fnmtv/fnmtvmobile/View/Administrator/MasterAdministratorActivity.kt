@@ -15,6 +15,7 @@ import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenUserFragmen
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.statistikBeritaFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterAdministratorBinding
+import androidx.appcompat.app.AppCompatDelegate
 
 class MasterAdministratorActivity : AppCompatActivity() {
 
@@ -22,6 +23,8 @@ class MasterAdministratorActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle // Jadikan global biar bisa diakses function lain
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Disable night mode ngeselin
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
         binding = ActivityMasterAdministratorBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -30,7 +33,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
         val seeder = kelompok3.fnmtv.fnmtvmobile.Database.Migration.DatabaseSeeder(this)
         seeder.run()
 
-        // Hamburger
+        // Munculin Hamburger
         toggle = ActionBarDrawerToggle(
             this, binding.drawerLayout,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -38,7 +41,8 @@ class MasterAdministratorActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // titik 3 kanan atas navbar header
+        // Nyiapin Lahan: Baris ini ngasih "lahan" di pojok kiri atas navbar lu. dan
+        // Dibajak sama Hamburger: Karena lu udah jalanin toggle.syncState() di baris sebelumnya, lahan yang tadinya mau diisi panah back itu langsung di-replace (dibajak) wujudnya jadi icon Hamburger (garis tiga).
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Role
@@ -71,7 +75,7 @@ class MasterAdministratorActivity : AppCompatActivity() {
         }
     }
 
-    // GABUNGAN FINAL BUAT KLIK HAMBURGER & TITIK TIGA
+    // Klik menu di titik 3 (option menu)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // 1. Ini WAJIB buat nangkep klik icon garis 3 (Hamburger)
         if (toggle.onOptionsItemSelected(item)) {
@@ -99,6 +103,12 @@ class MasterAdministratorActivity : AppCompatActivity() {
         }
     }
 
+    // munculin titik 3 kanan atas navbar header
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.top_menu_admin, menu)
+        return true
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
@@ -107,7 +117,10 @@ class MasterAdministratorActivity : AppCompatActivity() {
 
     private fun setupRoleAdmin() {
         applyUIConfig("Analitik Statistik", R.menu.bottom_menu_admin, lockSidebar = false)
-        replaceFragment(firstFragment()) // Fragment awal Admin
+
+        // Setup awal masuk tampilan awal
+        replaceFragment(statistikBeritaFragment()) // Fragment awal Admin
+        binding.bottomNav.selectedItemId = R.id.nav_analisis // Aktifin menu statistik berita di navbar bawah
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -204,12 +217,6 @@ class MasterAdministratorActivity : AppCompatActivity() {
         }
         return super.onMenuOpened(featureId, menu)
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.top_menu_admin, menu)
-        return true
-    }
-
 
     override fun onBackPressed() {
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
