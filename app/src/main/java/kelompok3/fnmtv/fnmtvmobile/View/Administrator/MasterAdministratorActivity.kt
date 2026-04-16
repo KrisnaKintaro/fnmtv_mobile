@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import kelompok3.fnmtv.fnmtvmobile.R
-import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.firstFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenKategoriFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.manajemenUserFragment
 import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin.statistikBeritaFragment
@@ -34,10 +33,6 @@ class MasterAdministratorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMasterAdministratorBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        //  Masang seeder
-        val seeder = kelompok3.fnmtv.fnmtvmobile.Database.Migration.DatabaseSeeder(this)
-        seeder.run()
 
         // Munculin Hamburger
         toggle = ActionBarDrawerToggle(

@@ -27,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
 
         val dbHelper = DatabaseHelper(this)
 
+        //  Masang seeder
+        val seeder = kelompok3.fnmtv.fnmtvmobile.Database.Migration.DatabaseSeeder(this)
+        seeder.run()
+
         binding.btnLogin.setOnClickListener {
             val email = binding.etLoginEmail.text.toString().trim()
             val password = binding.etLoginPassword.text.toString().trim()
