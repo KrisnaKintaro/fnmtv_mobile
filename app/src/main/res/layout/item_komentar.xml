@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tvNamaUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Anonim"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvIsiKomentar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Ini adalah komentar opini dari viewer."
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvWaktuKomentar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="10 menit yang lalu"
+        android:textSize="10sp"
+        android:textColor="@android:color/darker_gray" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/darker_gray" />
+</LinearLayout>

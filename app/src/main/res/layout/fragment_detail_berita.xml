@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Kategori Berita -->
+        <TextView
+            android:id="@+id/tvDetailKategori"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NASIONAL - HIBURAN"
+            android:textColor="#B71C1C"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <!-- Judul Berita -->
+        <TextView
+            android:id="@+id/tvDetailJudul"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="VERY deeply with a pair of white kid gloves, and."
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Info Penulis & Stats -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <ImageView
+                android:id="@+id/ivAuthor"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/bg_inisial_role" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/ivAuthor"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvAuthorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="editor1"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="23 April 2024 pukul 14:50 WIB"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvViews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="👁️ 2000"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tvCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="💬 5 Komentar"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- Gambar Utama -->
+        <ImageView
+            android:id="@+id/ivDetailFoto"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="16dp"
+            android:background="#DDDDDD"
+            android:scaleType="centerCrop" />
+
+        <!-- Isi Konten -->
+        <TextView
+            android:id="@+id/tvDetailIsi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:lineSpacingExtra="6sp"
+            android:text="Isi berita lengkap di sini. Omnis labore quae exercitationem eos. Sunt quis corpore quis est natus ullam libero vel. Culpa mollitia numquam aut atque nobis..."
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <!-- Reaksi -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bagaimana tanggapan Anda?"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView android:id="@+id/reaksiLike" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👍 5" android:padding="8dp" android:background="@drawable/bg_input_rounded" android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true"/>
+                    <TextView android:id="@+id/reaksiLove" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="❤️ 5" android:padding="8dp" android:background="@drawable/bg_input_rounded" android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true"/>
+                    <TextView android:id="@+id/reaksiWow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="😯 5" android:padding="8dp" android:background="@drawable/bg_input_rounded" android:layout_marginEnd="8dp" android:clickable="true" android:focusable="true"/>
+                    <TextView android:id="@+id/reaksiSad" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="😢 5" android:padding="8dp" android:background="@drawable/bg_input_rounded" android:clickable="true" android:focusable="true"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Bagikan -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bagikan artikel ini:"
+                android:textSize="12sp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#1877F2"
+                android:padding="0dp"
+                android:text="Facebook"
+                android:textAllCaps="false"
+                android:textSize="10sp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:backgroundTint="#000000"
+                android:padding="0dp"
+                android:text="Twitter"
+                android:textAllCaps="false"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <!-- Komentar -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Komentar Pembaca"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etKomentar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input_rounded"
+            android:gravity="top"
+            android:hint="Tulis komentar Anda..."
+            android:minLines="3"
+            android:padding="12dp" />
+
+        <Button
+            android:id="@+id/btnKirimKomentar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#B71C1C"
+            android:text="Kirim" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvKomentar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
