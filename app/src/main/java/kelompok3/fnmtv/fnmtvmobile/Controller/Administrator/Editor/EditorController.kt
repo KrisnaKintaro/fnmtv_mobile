@@ -8,8 +8,8 @@ import kelompok3.fnmtv.fnmtvmobile.Database.Model.Berita
 class EditorController(context: Context) {
     private val dbHelper = DatabaseHelper(context)
 
-    // 1. Simpan Berita sebagai Draft
-    fun simpanSebagaiDraft(berita: Berita): Boolean {
+    // Simpan berita (Draft/Pending)
+    fun simpanBerita(berita: Berita): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("user_id", berita.user_id)
@@ -18,36 +18,23 @@ class EditorController(context: Context) {
             put("slug", berita.judul_berita.lowercase().replace(" ", "-"))
             put("isi_berita", berita.isi_berita)
             put("foto_thumbnail", berita.foto_thumbnail)
-            put("status_berita", "Draft")
+            put("status_berita", berita.status_berita)
         }
         val result = db.insert("beritas", null, values)
         db.close()
         return result != -1L
     }
 
-    // 2. Ajukan Publikasi (Status -> Pending)
+    // Mengajukan ke redaksi
     fun ajukanPublikasi(beritaId: Int): Boolean {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("status_berita", "Pending")
-        }
-        val result = db.update("beritas", values, "id = ?", arrayOf(beritaId.toString()))
-        db.close()
-        return result > 0
+        return updateStatusBerita(beritaId, "Pending")
     }
 
-    // 3. Ambil daftar berita milik editor yang sedang login
+    // Ambil daftar berita milik saya
     fun getBeritaSaya(userId: Int): List<Berita> {
         val listBerita = mutableListOf<Berita>()
         val db = dbHelper.readableDatabase
-        val query = """
-            SELECT b.*, k.nama_kategori 
-            FROM beritas b 
-            LEFT JOIN kategoris k ON b.kategori_id = k.id 
-            WHERE b.user_id = ? AND b.deleted_at IS NULL
-            ORDER BY b.id DESC
-        """.trimIndent()
-        
+        val query = "SELECT b.*, k.nama_kategori FROM beritas b LEFT JOIN kategoris k ON b.kategori_id = k.id WHERE b.user_id = ? AND b.deleted_at IS NULL ORDER BY b.id DESC"
         val cursor = db.rawQuery(query, arrayOf(userId.toString()))
 
         if (cursor.moveToFirst()) {
@@ -71,15 +58,23 @@ class EditorController(context: Context) {
         return listBerita
     }
 
-    // 4. Revisi berita yang statusnya 'Rejected'
+    // Update konten revisi
     fun revisiBerita(id: Int, judulBaru: String, kontenBaru: String, fotoBaru: String): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("judul_berita", judulBaru)
             put("isi_berita", kontenBaru)
             put("foto_thumbnail", fotoBaru)
-            put("status_berita", "Draft") // Kembali ke draft setelah revisi agar bisa diajukan ulang
         }
+        val result = db.update("beritas", values, "id = ?", arrayOf(id.toString()))
+        db.close()
+        return result > 0
+    }
+
+    // Update status berita
+    fun updateStatusBerita(id: Int, status: String): Boolean {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply { put("status_berita", status) }
         val result = db.update("beritas", values, "id = ?", arrayOf(id.toString()))
         db.close()
         return result > 0

@@ -1,5 +1,6 @@
 package kelompok3.fnmtv.fnmtvmobile.View.Administrator.Editor
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ class ListDraftFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var controller: EditorController
     private lateinit var adapter: BeritaEditorAdapter
+    private var currentUserId: Int = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,44 +30,48 @@ class ListDraftFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        controller = EditorController(requireContext())
 
+        // Ambil userId dari session
+        val sharedPref = requireContext().getSharedPreferences("SESSION_FNMTV", Context.MODE_PRIVATE)
+        currentUserId = sharedPref.getInt("USER_ID", -1)
+
+        controller = EditorController(requireContext())
         setupRecyclerView()
         loadData()
 
         binding.fabTambahBerita.setOnClickListener {
-            val fragment = CreateBeritaFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            // Buka CreateBeritaFragment mode tulis baru (tanpa ID)
+            navigateToFragment(CreateBeritaFragment.newInstance())
         }
+    }
+
+    // Dipanggil setiap kali fragment kembali ke layar (misal setelah back dari form)
+    override fun onResume() {
+        super.onResume()
+        loadData()
     }
 
     private fun setupRecyclerView() {
         adapter = BeritaEditorAdapter(listOf()) { berita ->
-            if (berita.status_berita == "Rejected") {
-                val fragment = DetailRevisiFragment.newInstance(berita.id)
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit()
-            } else {
-                val fragment = CreateBeritaFragment.newInstance(berita.id)
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
+            // Semua status diarahkan ke CreateBeritaFragment
+            // Di dalam fragment itu sendiri yang akan handle view-only vs editable
+            navigateToFragment(CreateBeritaFragment.newInstance(berita.id))
         }
         binding.rvBeritaEditor.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBeritaEditor.adapter = adapter
     }
 
     private fun loadData() {
-        // Dummy userId = 1, sesuaikan dengan session login jika sudah ada
-        val data = controller.getBeritaSaya(1)
+        if (currentUserId == -1) return
+        val data = controller.getBeritaSaya(currentUserId)
         adapter.updateData(data)
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {
