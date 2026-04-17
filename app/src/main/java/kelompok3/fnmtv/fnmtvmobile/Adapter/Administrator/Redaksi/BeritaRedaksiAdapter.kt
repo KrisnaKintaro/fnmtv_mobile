@@ -1,5 +1,6 @@
 package kelompok3.fnmtv.fnmtvmobile.Adapter.Administrator.Redaksi
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kelompok3.fnmtv.fnmtvmobile.Database.Model.Berita
 import kelompok3.fnmtv.fnmtvmobile.R
+import java.io.File
 
 class BeritaRedaksiAdapter(
     private var listBerita: List<Berita>,
@@ -18,6 +20,7 @@ class BeritaRedaksiAdapter(
      * ViewHolder: Menghubungkan variabel dengan ID di layout item_berita_redaksi.xml
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val imgThumbnail: ImageView = view.findViewById(R.id.imgThumbnail)
         val tvJudul: TextView = view.findViewById(R.id.tvJudul)
         val tvInfo: TextView = view.findViewById(R.id.tvInfo)
         val tvTanggal: TextView = view.findViewById(R.id.tvTanggal)
@@ -41,11 +44,20 @@ class BeritaRedaksiAdapter(
         holder.tvInfo.text = "Editor: ${berita.nama_penulis} | Kategori: ${berita.nama_kategori}"
         holder.tvTanggal.text = berita.created_at
         
+        // FUNGSI: Load Gambar dari Internal Storage
+        val imageFile = File(berita.foto_thumbnail)
+        if (imageFile.exists()) {
+            holder.imgThumbnail.setImageURI(Uri.fromFile(imageFile))
+        } else {
+            holder.imgThumbnail.setImageResource(android.R.drawable.ic_menu_gallery) // Placeholder jika file tidak ada
+        }
+        
         // Atur label status sesuai database
         holder.tvStatus.text = berita.status_berita.uppercase()
         when (berita.status_berita) {
             "Pending" -> holder.tvStatus.setBackgroundColor(holder.itemView.context.getColor(android.R.color.holo_orange_dark))
             "Rejected" -> holder.tvStatus.setBackgroundColor(holder.itemView.context.getColor(android.R.color.holo_red_dark))
+            "Published" -> holder.tvStatus.setBackgroundColor(holder.itemView.context.getColor(android.R.color.holo_green_dark))
             else -> holder.tvStatus.setBackgroundColor(holder.itemView.context.getColor(android.R.color.darker_gray))
         }
 
