@@ -54,9 +54,7 @@ class MonitoringBeritaFragment : Fragment() {
         }
     }
 
-    /**
-     * FUNGSI setupRecyclerView(): Inisialisasi list berita dengan Adapter
-     */
+    // Proses Awal list berita dengan menggunakan Adapter
     private fun setupRecyclerView() {
         adapter = BeritaRedaksiAdapter(listOf()) { berita ->
             tampilkanDialogDetail(berita)
@@ -65,9 +63,7 @@ class MonitoringBeritaFragment : Fragment() {
         binding.rvMonitoringBerita.adapter = adapter
     }
 
-    /**
-     * FUNGSI loadData(): Mengambil data dari Controller dan menampilkan ke UI
-     */
+    //Mengambil data dari Controller dan menampilkan ke UI
     private fun loadData() {
         val tipe = arguments?.getString("TIPE_HALAMAN") ?: "Antrean"
 
@@ -80,9 +76,8 @@ class MonitoringBeritaFragment : Fragment() {
         adapter.updateData(listBerita)
     }
 
-    /**
-     * FUNGSI filterData(): Memfilter daftar berita berdasarkan status
-     */
+
+    // Memfilter daftar berita berdasarkan status
     private fun filterData(status: String) {
         val filtered = if (status == "Semua") {
             listBerita
@@ -92,10 +87,7 @@ class MonitoringBeritaFragment : Fragment() {
         adapter.updateData(filtered)
     }
 
-    /**
-     * FUNGSI tampilkanDialogDetail(): Memunculkan modal detail verifikasi berita
-     * (Implementasi Point 3: DetailVerifikasiFragment dalam bentuk Dialog)
-     */
+    //Memunculkan modal detail verifikasi berita (DetailVerifikasiFragment dalam bentuk Dialog)
     private fun tampilkanDialogDetail(berita: Berita) {
         val dialogView = layoutInflater.inflate(R.layout.fragment_detail_verifikasi, null)
         val dialog = AlertDialog.Builder(requireContext(), android.R.style.Theme_Material_Light_NoActionBar_Fullscreen)
@@ -112,7 +104,7 @@ class MonitoringBeritaFragment : Fragment() {
         tvMeta.text = "Editor: ${berita.nama_penulis} | Kategori: ${berita.nama_kategori} | Status: ${berita.status_berita}"
         etIsi.setText(berita.isi_berita)
 
-        // Tombol Terbitkan: Langsung ubah status ke Published
+        // Tombol Terbitkan
         btnTerbitkan.setOnClickListener {
             val sukses = controller.updateStatusBerita(berita.id, "Published")
             if (sukses) {
@@ -122,7 +114,7 @@ class MonitoringBeritaFragment : Fragment() {
             }
         }
 
-        // Tombol Tolak: Munculkan dialog input catatan penolakan
+        // Tombol Tolak
         btnTolak.setOnClickListener {
             tampilkanDialogPenolakan(berita.id) {
                 dialog.dismiss()
@@ -133,10 +125,7 @@ class MonitoringBeritaFragment : Fragment() {
         dialog.show()
     }
 
-    /**
-     * FUNGSI tampilkanDialogPenolakan(): Mewajibkan Redaksi mengisi alasan penolakan
-     * (Implementasi Point 5: dialog_penolakan.xml)
-     */
+    //menampilkan pop up alasan penolakan, dan Redaksi harus mengisi alasan penolakan
     private fun tampilkanDialogPenolakan(idBerita: Int, onSuccess: () -> Unit) {
         val v = layoutInflater.inflate(R.layout.dialog_penolakan, null)
         val d = AlertDialog.Builder(requireContext()).setView(v).create()

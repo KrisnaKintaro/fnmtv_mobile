@@ -11,7 +11,7 @@ class VerifikasiBeritaController(context: Context) {
     /**
      * FUNGSI getBeritaForRedaksi():
      * Mengambil daftar berita yang masuk ke meja Redaksi.
-     * Status yang diambil adalah Draft, Pending, atau Rejected (Belum Terbit).
+     * Hanya mengambil status 'Pending' dan 'Rejected'. Draft editor tidak ditampilkan.
      */
     fun getBeritaForRedaksi(): List<Berita> {
         val beritaList = mutableListOf<Berita>()
@@ -23,7 +23,7 @@ class VerifikasiBeritaController(context: Context) {
             FROM beritas b
             LEFT JOIN users u ON b.user_id = u.id
             LEFT JOIN kategoris k ON b.kategori_id = k.id
-            WHERE b.status_berita != 'Published' AND b.deleted_at IS NULL
+            WHERE b.status_berita IN ('Pending', 'Rejected') AND b.deleted_at IS NULL
             ORDER BY b.created_at DESC
         """.trimIndent()
 
