@@ -49,7 +49,8 @@ class manajemenUserAdapter(
         binding.txtRoleUser.text = "Role: ${user.role} | Status: ${user.status}"
 
         // Set Inisial Role (Ambil huruf pertama dari Role)
-        binding.txtInisialRole.text = if (user.role.isNotEmpty()) user.role.substring(0, 1).uppercase() else "?"
+        binding.txtInisialRole.text =
+            if (user.role.isNotEmpty()) user.role.substring(0, 1).uppercase() else "?"
 
         // Listener buat PopupMenu dengan Theme
         binding.btnOpsiUser.setOnClickListener {
@@ -59,7 +60,7 @@ class manajemenUserAdapter(
 
             popupMenu.menuInflater.inflate(R.menu.menu_opsi_user, popupMenu.menu)
 
-            // TRIK KHUSUS: Munculkan Ikon di PopupMenu pakai 'Reflection'
+            // munculkan Ikon di PopupMenu pakai 'Reflection'
             try {
                 val fields = popupMenu.javaClass.declaredFields
                 for (field in fields) {
@@ -67,7 +68,10 @@ class manajemenUserAdapter(
                         field.isAccessible = true
                         val menuPopupHelper = field.get(popupMenu)
                         val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
-                        val setForceIcons = classPopupHelper.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
+                        val setForceIcons = classPopupHelper.getMethod(
+                            "setForceShowIcon",
+                            Boolean::class.javaPrimitiveType
+                        )
                         setForceIcons.invoke(menuPopupHelper, true)
                         break
                     }
@@ -83,10 +87,12 @@ class manajemenUserAdapter(
                         onEditClick(user)
                         true
                     }
+
                     R.id.menu_hapus_user -> {
                         onDeleteClick(user)
                         true
                     }
+
                     else -> false
                 }
             }

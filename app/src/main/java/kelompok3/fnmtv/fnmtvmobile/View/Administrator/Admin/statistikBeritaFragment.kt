@@ -30,7 +30,11 @@ class statistikBeritaFragment : Fragment() {
     private var activePeriod = "Hari Ini"
     private var activeMetric = "Views"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentStatistikBeritaBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
@@ -65,7 +69,7 @@ class statistikBeritaFragment : Fragment() {
 
         binding.toggleMetricChart.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
-                activeMetric = when(checkedId) {
+                activeMetric = when (checkedId) {
                     R.id.btn_metric_views -> "Views"
                     R.id.btn_metric_pengunjung -> "Pengunjung"
                     else -> "Komentar"
@@ -82,7 +86,8 @@ class statistikBeritaFragment : Fragment() {
         binding.tvSummaryKomentar.text = summary["komentar"].toString()
 
         val nominal = summary["pendapatan"] as Double
-        binding.tvSummaryPendapatan.text = "Rp " + NumberFormat.getInstance(Locale("id", "ID")).format(nominal)
+        binding.tvSummaryPendapatan.text =
+            "Rp " + NumberFormat.getInstance(Locale("id", "ID")).format(nominal)
 
         updateTrendChart()
         renderHeatmap()
@@ -112,7 +117,8 @@ class statistikBeritaFragment : Fragment() {
         dataSet.lineWidth = 3f
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
         dataSet.setDrawFilled(true)
-        dataSet.fillDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gradient_chart)
+        dataSet.fillDrawable =
+            ContextCompat.getDrawable(requireContext(), R.drawable.bg_gradient_chart)
 
         binding.trendChart.apply {
             data = LineData(dataSet)

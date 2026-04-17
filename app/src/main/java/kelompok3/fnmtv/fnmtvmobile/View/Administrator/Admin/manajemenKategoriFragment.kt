@@ -21,7 +21,6 @@ import kelompok3.fnmtv.fnmtvmobile.databinding.DialogKonfirmasiHapusKategoriBind
 class manajemenKategoriFragment : Fragment() {
 
 
-
     private var _binding: FragmentManajemenKategoriBinding? = null
     private val binding get() = _binding!!
 
@@ -80,7 +79,6 @@ class manajemenKategoriFragment : Fragment() {
         val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        // LOGIKA AUTO-SLUG
         var isAutoGenerating = true
 
         dialogBinding.etFormNamaKategori.addTextChangedListener(object : TextWatcher {
@@ -157,7 +155,7 @@ class manajemenKategoriFragment : Fragment() {
         dialog.show()
     }
 
-    // --- FORM KONFIRMASI HAPUS ---
+    // form konfirm hapus
     private fun tampilkanDialogKonfirmasiHapus(kategori: Kategori) {
         val dialogBinding = DialogKonfirmasiHapusKategoriBinding.inflate(layoutInflater)
         val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
@@ -166,17 +164,18 @@ class manajemenKategoriFragment : Fragment() {
         dialogBinding.tvHapusNamaKategori.text = kategori.nama_kategori
         dialogBinding.btnBatalHapusKategori.setOnClickListener { dialog.dismiss() }
 
-        dialogBinding.btnKonfirmasiHapusKategori.findViewById<Button>(R.id.btn_konfirmasi_hapus_kategori).setOnClickListener {
-            if (kategoriController.hapusKategori(kategori.id)) {
-                Toast.makeText(requireContext(), "Kategori musnah!", Toast.LENGTH_SHORT).show()
-                loadDataDariDatabase()
+        dialogBinding.btnKonfirmasiHapusKategori.findViewById<Button>(R.id.btn_konfirmasi_hapus_kategori)
+            .setOnClickListener {
+                if (kategoriController.hapusKategori(kategori.id)) {
+                    Toast.makeText(requireContext(), "Kategori musnah!", Toast.LENGTH_SHORT).show()
+                    loadDataDariDatabase()
+                }
+                dialog.dismiss()
             }
-            dialog.dismiss()
-        }
         dialog.show()
     }
 
-    // --- TERIMA LEMPARAN REFRESH DARI MASTER ACTIVITY ---
+    // Ketika tombol refresh di navbar di klik
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_refresh) {
             loadDataDariDatabase()

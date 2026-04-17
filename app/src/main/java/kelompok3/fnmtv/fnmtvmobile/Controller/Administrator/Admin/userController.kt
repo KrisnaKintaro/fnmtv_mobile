@@ -8,7 +8,6 @@ import kelompok3.fnmtv.fnmtvmobile.Database.Model.User
 class UserController(context: Context) {
     private val dbHelper = DatabaseHelper(context)
 
-    // FUNGSI READ: Narik semua data User
     fun getAllUsers(): List<User> {
         val userList = mutableListOf<User>()
         val db = dbHelper.readableDatabase
@@ -31,7 +30,6 @@ class UserController(context: Context) {
         return userList
     }
 
-    // FUNGSI CREATE: Tambah user ke SQLite
     fun tambahUser(user: User): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -46,7 +44,6 @@ class UserController(context: Context) {
         return result != -1L
     }
 
-    // FUNGSI UPDATE: Edit data user di SQLite
     fun editUser(user: User): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -55,13 +52,11 @@ class UserController(context: Context) {
             put("role", user.role)
             put("status", user.status)
         }
-        // Update berdasarkan ID
         val result = db.update("users", values, "id = ?", arrayOf(user.id.toString()))
         db.close()
         return result > 0
     }
 
-    // FUNGSI DELETE: Hapus user dari SQLite
     fun hapusUser(userId: Int): Boolean {
         val db = dbHelper.writableDatabase
         val result = db.delete("users", "id = ?", arrayOf(userId.toString()))

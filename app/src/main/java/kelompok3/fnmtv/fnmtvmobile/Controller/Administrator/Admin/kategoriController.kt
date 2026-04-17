@@ -8,8 +8,6 @@ import kelompok3.fnmtv.fnmtvmobile.Database.Model.Kategori
 class KategoriController(context: Context) {
     private val dbHelper = DatabaseHelper(context)
 
-    // FUNGSI READ: Ambil semua data
-    // 1. UPDATE FUNGSI READ
     fun getAllKategori(): List<Kategori> {
         val kategoriList = mutableListOf<Kategori>()
         val db = dbHelper.readableDatabase
@@ -29,19 +27,17 @@ class KategoriController(context: Context) {
         return kategoriList
     }
 
-    // 2. UPDATE FUNGSI CREATE
     fun tambahKategori(kategori: Kategori): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put("nama_kategori", kategori.nama_kategori)
-            put("slug", kategori.slug) // <-- TAMBAHAN
+            put("slug", kategori.slug)
         }
         val result = db.insert("kategoris", null, values)
         db.close()
         return result != -1L
     }
 
-    // 3. UPDATE FUNGSI UPDATE (EDIT)
     fun editKategori(kategori: Kategori): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -53,7 +49,6 @@ class KategoriController(context: Context) {
         return result > 0
     }
 
-    // FUNGSI DELETE: Hapus data
     fun hapusKategori(kategoriId: Int): Boolean {
         val db = dbHelper.writableDatabase
         val result = db.delete("kategoris", "id = ?", arrayOf(kategoriId.toString()))
