@@ -16,9 +16,7 @@ class BeritaRedaksiAdapter(
     private val onItemClick: (Berita) -> Unit
 ) : RecyclerView.Adapter<BeritaRedaksiAdapter.ViewHolder>() {
 
-    /**
-     * ViewHolder: Menghubungkan variabel dengan ID di layout item_berita_redaksi.xml
-     */
+    // Menghubungkan variabel dengan ID di layout item_berita_redaksi.xml
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgThumbnail: ImageView = view.findViewById(R.id.imgThumbnail)
         val tvJudul: TextView = view.findViewById(R.id.tvJudul)
@@ -28,15 +26,16 @@ class BeritaRedaksiAdapter(
         val btnVerifikasi: ImageView = view.findViewById(R.id.btnVerifikasi)
     }
 
+    // Menghubungkan layout XML ke adapter
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_berita_redaksi, parent, false)
         return ViewHolder(view)
     }
 
-    /**
-     * onBindViewHolder: Mengisi data dari model ke komponen UI
-     */
+
+    // Mengisi data ke tampilan
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val berita = listBerita[position]
         
@@ -44,7 +43,7 @@ class BeritaRedaksiAdapter(
         holder.tvInfo.text = "Editor: ${berita.nama_penulis} | Kategori: ${berita.nama_kategori}"
         holder.tvTanggal.text = berita.created_at
         
-        // FUNGSI: Load Gambar dari Internal Storage
+        // Load Gambar dari Internal Storage
         val imageFile = File(berita.foto_thumbnail)
         if (imageFile.exists()) {
             holder.imgThumbnail.setImageURI(Uri.fromFile(imageFile))
@@ -61,16 +60,14 @@ class BeritaRedaksiAdapter(
             else -> holder.tvStatus.setBackgroundColor(holder.itemView.context.getColor(android.R.color.darker_gray))
         }
 
-        // Event saat item atau tombol edit diklik
+        // Mengirim data ke activity/fragment saat diklik
         holder.itemView.setOnClickListener { onItemClick(berita) }
         holder.btnVerifikasi.setOnClickListener { onItemClick(berita) }
     }
 
     override fun getItemCount(): Int = listBerita.size
 
-    /**
-     * Fungsi helper untuk memperbarui list data dari fragment
-     */
+    // Update data untuk memperbarui list data dari fragment
     fun updateData(newList: List<Berita>) {
         listBerita = newList
         notifyDataSetChanged()

@@ -29,7 +29,7 @@ class CreateBeritaFragment : Fragment() {
     private var editBeritaId: Int = -1
     private var currentUserId: Int = -1
 
-    // Simpan path permanen (bukan URI sementara)
+    // Simpan path permanen
     private var savedImagePath: String = "default.jpg"
 
     private val imagePickerLauncher =
@@ -91,10 +91,8 @@ class CreateBeritaFragment : Fragment() {
         binding.btnKirimRedaksi.setOnClickListener { simpanBeritaProses("Pending") }
     }
 
-    /**
-     * Copy gambar dari URI galeri ke folder internal app.
-     * Return: absolute path file, atau null jika gagal.
-     */
+    // Copy gambar dari galeri ke folder internal app.
+    // Menampilkan path file
     private fun copyImageToInternalStorage(uri: Uri): String? {
         return try {
             val inputStream = requireContext().contentResolver.openInputStream(uri) ?: return null
