@@ -25,7 +25,7 @@ import kelompok3.fnmtv.fnmtvmobile.View.Administrator.Redaksi.MonitoringBeritaFr
 class MasterAdministratorActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMasterAdministratorBinding
-    private lateinit var toggle: ActionBarDrawerToggle // Jadikan global biar bisa diakses function lain
+    private lateinit var toggle: ActionBarDrawerToggle // dibuat global agar bisa diakses fungsi`    lain
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Disable night mode ngeselin

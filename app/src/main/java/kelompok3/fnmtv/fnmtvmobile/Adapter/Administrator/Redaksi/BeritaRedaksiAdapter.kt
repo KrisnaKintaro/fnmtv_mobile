@@ -16,9 +16,8 @@ class BeritaRedaksiAdapter(
     private val onItemClick: (Berita) -> Unit
 ) : RecyclerView.Adapter<BeritaRedaksiAdapter.ViewHolder>() {
 
-    /**
-     * ViewHolder: Menghubungkan variabel dengan ID di layout item_berita_redaksi.xml
-     */
+
+    // Menghubungkan variabel dengan ID di layout item_berita_redaksi.xml
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgThumbnail: ImageView = view.findViewById(R.id.imgThumbnail)
         val tvJudul: TextView = view.findViewById(R.id.tvJudul)
@@ -34,9 +33,7 @@ class BeritaRedaksiAdapter(
         return ViewHolder(view)
     }
 
-    /**
-     * onBindViewHolder: Mengisi data dari model ke komponen UI
-     */
+    // onBindViewHolder: Mengisi data dari model ke komponen UI
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val berita = listBerita[position]
         
@@ -44,7 +41,7 @@ class BeritaRedaksiAdapter(
         holder.tvInfo.text = "Editor: ${berita.nama_penulis} | Kategori: ${berita.nama_kategori}"
         holder.tvTanggal.text = berita.created_at
         
-        // FUNGSI: Load Gambar dari Internal Storage
+        //Load Gambar dari Internal Storage
         val imageFile = File(berita.foto_thumbnail)
         if (imageFile.exists()) {
             holder.imgThumbnail.setImageURI(Uri.fromFile(imageFile))
@@ -68,9 +65,7 @@ class BeritaRedaksiAdapter(
 
     override fun getItemCount(): Int = listBerita.size
 
-    /**
-     * Fungsi helper untuk memperbarui list data dari fragment
-     */
+    // Fungsi helper untuk memperbarui list data dari fragment
     fun updateData(newList: List<Berita>) {
         listBerita = newList
         notifyDataSetChanged()
