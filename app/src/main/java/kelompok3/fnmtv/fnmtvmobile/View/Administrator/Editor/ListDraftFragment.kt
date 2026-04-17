@@ -40,12 +40,12 @@ class ListDraftFragment : Fragment() {
         loadData()
 
         binding.fabTambahBerita.setOnClickListener {
-            // Buka CreateBeritaFragment mode tulis baru (tanpa ID)
+            // Buka CreateBeritaFragment mode tulis baru
             navigateToFragment(CreateBeritaFragment.newInstance())
         }
     }
 
-    // Dipanggil setiap kali fragment kembali ke layar (misal setelah back dari form)
+    // Dipanggil setiap kali fragment kembali ke layar
     override fun onResume() {
         super.onResume()
         loadData()
@@ -54,7 +54,6 @@ class ListDraftFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = BeritaEditorAdapter(listOf()) { berita ->
             // Semua status diarahkan ke CreateBeritaFragment
-            // Di dalam fragment itu sendiri yang akan handle view-only vs editable
             navigateToFragment(CreateBeritaFragment.newInstance(berita.id))
         }
         binding.rvBeritaEditor.layoutManager = LinearLayoutManager(requireContext())
