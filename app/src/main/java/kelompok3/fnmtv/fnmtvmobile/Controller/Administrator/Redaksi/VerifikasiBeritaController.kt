@@ -8,16 +8,12 @@ import kelompok3.fnmtv.fnmtvmobile.Database.Model.Berita
 class VerifikasiBeritaController(context: Context) {
     private val dbHelper = DatabaseHelper(context)
 
-    /**
-     * FUNGSI getBeritaForRedaksi():
-     * Mengambil daftar berita yang masuk ke meja Redaksi.
-     * Hanya mengambil status 'Pending' dan 'Rejected'. Draft editor tidak ditampilkan.
-     */
+    // ambil daftar berita dgn status pending dan rejected
     fun getBeritaForRedaksi(): List<Berita> {
         val beritaList = mutableListOf<Berita>()
         val db = dbHelper.readableDatabase
         
-        // Query dengan JOIN untuk mendapatkan nama penulis dan kategori
+        // Query digabung buat mendapatkan nama penulis & kategori
         val query = """
             SELECT b.*, u.username as nama_penulis, k.nama_kategori 
             FROM beritas b
@@ -55,10 +51,7 @@ class VerifikasiBeritaController(context: Context) {
         return beritaList
     }
 
-    /**
-     * FUNGSI getBeritaTerbit():
-     * Mengambil berita yang SUDAH terbit (Published)
-     */
+    // ambil berita yg sdh terbit
     fun getBeritaTerbit(): List<Berita> {
         val beritaList = mutableListOf<Berita>()
         val db = dbHelper.readableDatabase
@@ -100,11 +93,7 @@ class VerifikasiBeritaController(context: Context) {
         return beritaList
     }
 
-    /**
-     * FUNGSI updateStatusBerita(id, status, catatan):
-     * Mengubah status berita menjadi 'Published' atau 'Rejected'.
-     * Jika status 'Rejected', maka catatan penolakan wajib disimpan.
-     */
+    //ubah status berita published atau Rejected, klo ditolak akan muncul pop up isi alasan
     fun updateStatusBerita(id: Int, status: String, catatan: String? = null): Boolean {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -113,22 +102,6 @@ class VerifikasiBeritaController(context: Context) {
             if (status == "Published") {
                 put("waktu_publikasi", System.currentTimeMillis().toString())
             }
-        }
-        val result = db.update("beritas", values, "id = ?", arrayOf(id.toString()))
-        db.close()
-        return result > 0
-    }
-
-    /**
-     * FUNGSI updateKontenMinor(id, judulBaru, kontenBaru):
-     * Digunakan oleh Redaksi untuk melakukan revisi kecil pada judul atau isi berita
-     * sebelum berita tersebut dipublikasikan.
-     */
-    fun updateKontenMinor(id: Int, judulBaru: String, kontenBaru: String): Boolean {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put("judul_berita", judulBaru)
-            put("isi_berita", kontenBaru)
         }
         val result = db.update("beritas", values, "id = ?", arrayOf(id.toString()))
         db.close()

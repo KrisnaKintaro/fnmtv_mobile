@@ -1,8 +1,6 @@
 package kelompok3.fnmtv.fnmtvmobile.View.Administrator.Admin
 
 import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -42,20 +40,28 @@ class manajemenUserFragment : Fragment() {
         userController = UserController(requireContext())
         loadDataDariDatabase()
 
-        // 1. Setup Spinner Role Filter
+        // Setup Spinner Role Filter
         val roles = arrayOf("Semua Role", "Admin", "Redaksi", "Editor", "Viewer")
-        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, roles)
+        val spinnerAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, roles)
         binding.spinRoleFilter.adapter = spinnerAdapter
 
         // Action kalau Spinner dipilih
-        binding.spinRoleFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                terapkanFilterGanda()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        binding.spinRoleFilter.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    terapkanFilterGanda()
+                }
 
-        // 2. Action Live Search dari AutoCompleteTextView
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+        // Fitur live search
         binding.acSearchUser.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -68,13 +74,15 @@ class manajemenUserFragment : Fragment() {
         registerForContextMenu(binding.lvUsers)
     }
 
-    // --- FUNGSI LOAD & FILTER DATA ---
+    // Fungsi load dan filter data
     private fun loadDataDariDatabase() {
         semuaUser = userController.getAllUsers()
-        selectedUsers.clear() // Kosongin cache checkbox tiap refresh
-
         val listSugestiNama = semuaUser.map { it.username }.toTypedArray()
-        val autoAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, listSugestiNama)
+        val autoAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            listSugestiNama
+        )
         binding.acSearchUser.setAdapter(autoAdapter)
 
         adapter = manajemenUserAdapter(
@@ -99,14 +107,14 @@ class manajemenUserFragment : Fragment() {
         adapter.updateData(hasilPencarian)
     }
 
-    // --- FUNGSI FORM TAMBAH & EDIT (CRUD UTAMA) ---
     private fun tampilkanDialogTambahEdit(user: User?) {
         val dialogBinding = DialogTambahEditUserBinding.inflate(layoutInflater)
         val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         val roles = arrayOf("Admin", "Redaksi", "Editor", "Viewer")
-        dialogBinding.spinFormRole.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, roles)
+        dialogBinding.spinFormRole.adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, roles)
 
         // Isi form otomatis kalau mode Edit
         if (user != null) {
@@ -115,7 +123,8 @@ class manajemenUserFragment : Fragment() {
             dialogBinding.etFormEmail.setText(user.email)
             // Password sengaja gak di-setText biar kosong, kalau diisi berarti user mau ganti password
             dialogBinding.lblPasswordUser.text = "Password (Kosongi jika tak ingin diubah)"
-            if (user.status == "Aktif") dialogBinding.rbAktif.isChecked = true else dialogBinding.rbNonaktif.isChecked = true
+            if (user.status == "Aktif") dialogBinding.rbAktif.isChecked =
+                true else dialogBinding.rbNonaktif.isChecked = true
         } else {
             dialogBinding.tvDialogTitle.text = "Tambah Pengguna Baru"
             dialogBinding.rbAktif.isChecked = true
@@ -126,40 +135,57 @@ class manajemenUserFragment : Fragment() {
         dialogBinding.btnSimpanUser.setOnClickListener {
             val inputUsername = dialogBinding.etFormUsername.text.toString().trim()
             val inputEmail = dialogBinding.etFormEmail.text.toString().trim()
-            val inputPassword = dialogBinding.etFormPassword.text.toString().trim() // <--- AMBIL TEKS PASSWORD
+            val inputPassword =
+                dialogBinding.etFormPassword.text.toString().trim() // <--- AMBIL TEKS PASSWORD
             val inputRole = dialogBinding.spinFormRole.selectedItem.toString()
             val inputStatus = if (dialogBinding.rbAktif.isChecked) "Aktif" else "Nonaktif"
 
             // Validasi Dasar (Username & Email gak boleh kosong)
             if (inputUsername.isEmpty() || inputEmail.isEmpty()) {
-                Toast.makeText(requireContext(), "Username dan Email wajib diisi cuy!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Username dan Email wajib diisi cuy!",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
             if (user == null) {
-                // LOGIKA TAMBAH (CREATE)
-                // Kalau tambah baru, Password wajib diisi dong!
+                // Kalau tambah baru, Password wajib diisi
                 if (inputPassword.isEmpty()) {
-                    Toast.makeText(requireContext(), "Password wajib diisi untuk User baru!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Password wajib diisi untuk User baru!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
 
-                val newUser = User(0, inputUsername, inputEmail, inputRole, inputStatus, inputPassword)
+                val newUser =
+                    User(0, inputUsername, inputEmail, inputRole, inputStatus, inputPassword)
                 val sukses = userController.tambahUser(newUser)
                 if (sukses) {
-                    Toast.makeText(requireContext(), "User baru berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "User baru berhasil ditambahkan!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     loadDataDariDatabase()
                     dialog.dismiss()
                 }
             } else {
-                // LOGIKA EDIT (UPDATE)
                 // Kalau password dikosongin, berarti pakai password lama. Kalau diisi, pakai password baru.
                 val finalPassword = if (inputPassword.isNotEmpty()) inputPassword else user.password
 
-                val updatedUser = User(user.id, inputUsername, inputEmail, inputRole, inputStatus, finalPassword)
+                val updatedUser =
+                    User(user.id, inputUsername, inputEmail, inputRole, inputStatus, finalPassword)
                 val sukses = userController.editUser(updatedUser)
                 if (sukses) {
-                    Toast.makeText(requireContext(), "Data berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Data berhasil diperbarui!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     loadDataDariDatabase()
                     dialog.dismiss()
                 }
@@ -168,7 +194,6 @@ class manajemenUserFragment : Fragment() {
         dialog.show()
     }
 
-    // --- FUNGSI HAPUS ---
     private fun tampilkanDialogKonfirmasiHapus(user: User) {
         val dialogBinding = DialogKonfirmasiHapusBinding.inflate(layoutInflater)
         val dialog = AlertDialog.Builder(requireContext()).setView(dialogBinding.root).create()
@@ -181,7 +206,8 @@ class manajemenUserFragment : Fragment() {
 
         dialogBinding.btnKonfirmasiHapus.setOnClickListener {
             if (userController.hapusUser(user.id)) {
-                Toast.makeText(requireContext(), "${user.username} musnah!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "${user.username} musnah!", Toast.LENGTH_SHORT)
+                    .show()
                 loadDataDariDatabase()
             }
             dialog.dismiss()
@@ -189,7 +215,7 @@ class manajemenUserFragment : Fragment() {
         dialog.show()
     }
 
-    // --- MENU REFRESH ---
+    // Ketika tombol refresh di navbar atas di klik
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_refresh) {
             loadDataDariDatabase()
@@ -197,30 +223,6 @@ class manajemenUserFragment : Fragment() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    // --- BULK DELETE (CONTEXT MENU KETIKA LIST DIKLIK TAHAN) ---
-    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        menu.setHeaderTitle("Aksi Massal (${selectedUsers.size} dipilih)")
-        menu.add(Menu.NONE, 1, 1, "Hapus Terpilih")
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == 1) {
-            if (selectedUsers.isEmpty()) {
-                Toast.makeText(context, "Centang dulu user yang mau dihapus cuy!", Toast.LENGTH_SHORT).show()
-                return true
-            }
-            var suksesHapus = 0
-            for (u in selectedUsers) {
-                if(userController.hapusUser(u.id)) suksesHapus++
-            }
-            Toast.makeText(context, "$suksesHapus data berhasil dihapus massal!", Toast.LENGTH_SHORT).show()
-            loadDataDariDatabase()
-            return true
-        }
-        return super.onContextItemSelected(item)
     }
 
     override fun onDestroyView() {

@@ -42,12 +42,29 @@ class AnalitikController(context: Context) {
             val db = dbHelper.readableDatabase
             val timeClause = getWhereTimeClause(periode)
 
-            try { db.rawQuery("SELECT COUNT(*) FROM view_logs WHERE $timeClause", null).use { if (it.moveToFirst()) views = it.getInt(0) } } catch (e: Exception) { e.printStackTrace() }
+            try {
+                db.rawQuery("SELECT COUNT(*) FROM view_logs WHERE $timeClause", null)
+                    .use { if (it.moveToFirst()) views = it.getInt(0) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
             // FIX: Hapus "OR status = 'Published'" karena SQLite bakal error kalau kolom 'status' gak ada di tabel beritas
-            try { db.rawQuery("SELECT COUNT(*) FROM beritas WHERE status_berita = 'Published' AND $timeClause", null).use { if (it.moveToFirst()) berita = it.getInt(0) } } catch (e: Exception) { e.printStackTrace() }
+            try {
+                db.rawQuery(
+                    "SELECT COUNT(*) FROM beritas WHERE status_berita = 'Published' AND $timeClause",
+                    null
+                ).use { if (it.moveToFirst()) berita = it.getInt(0) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
-            try { db.rawQuery("SELECT COUNT(*) FROM komentars WHERE $timeClause", null).use { if (it.moveToFirst()) komentar = it.getInt(0) } } catch (e: Exception) { e.printStackTrace() }
+            try {
+                db.rawQuery("SELECT COUNT(*) FROM komentars WHERE $timeClause", null)
+                    .use { if (it.moveToFirst()) komentar = it.getInt(0) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
             try {
                 // FIX: Pakai kolom resmi (berita_id) tanpa OR
@@ -58,12 +75,22 @@ class AnalitikController(context: Context) {
                     WHERE b.status_berita = 'Published' 
                     AND p.status_pembayaran = 'Paid' AND $pClause
                 """.trimIndent()
-                db.rawQuery(qPendapatan, null).use { if (it.moveToFirst()) pendapatan = it.getDouble(0) }
-            } catch (e: Exception) { e.printStackTrace() }
+                db.rawQuery(qPendapatan, null)
+                    .use { if (it.moveToFirst()) pendapatan = it.getDouble(0) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
-        } catch (e: Exception) { e.printStackTrace() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
-        return mapOf("views" to views, "berita" to berita, "komentar" to komentar, "pendapatan" to pendapatan)
+        return mapOf(
+            "views" to views,
+            "berita" to berita,
+            "komentar" to komentar,
+            "pendapatan" to pendapatan
+        )
     }
 
     // 2. TREND CHART DATA
@@ -71,16 +98,17 @@ class AnalitikController(context: Context) {
         val result = mutableListOf<Pair<String, Float>>()
         try {
             val db = dbHelper.readableDatabase
-            val table = when(metric) {
+            val table = when (metric) {
                 "Views" -> "view_logs"
                 "Pengunjung" -> "view_logs"
                 else -> "komentars"
             }
 
             // FIX: ipAddress diganti jadi ip_address sesuai DatabaseHelper lu
-            val columnCount = if (metric == "Pengunjung") "COUNT(DISTINCT ip_address)" else "COUNT(*)"
+            val columnCount =
+                if (metric == "Pengunjung") "COUNT(DISTINCT ip_address)" else "COUNT(*)"
 
-            val (sqlFormat, limit) = when(periode) {
+            val (sqlFormat, limit) = when (periode) {
                 "Hari Ini" -> Pair("strftime('%H:00', created_at)", 24)
                 "7 Hari" -> Pair("strftime('%d/%m', created_at)", 7)
                 "30 Hari" -> Pair("strftime('%W', created_at)", 4)
@@ -138,17 +166,19 @@ class AnalitikController(context: Context) {
                         // Susun string sesuai permintaan: jumlah view | jumlah komentar | jumlah reaksi
                         val detailReal = "$views View | $komen Komentar | $reaksi Reaksi"
 
-                        list.add(Berita(
-                            id = getIntSafe(cursor, "id"),
-                            user_id = getIntSafe(cursor, "user_id"),
-                            kategori_id = getIntSafe(cursor, "kategori_id"),
-                            judul_berita = getStringSafe(cursor, "judul_berita"),
-                            slug = getStringSafe(cursor, "slug"),
-                            isi_berita = getStringSafe(cursor, "isi_berita"),
-                            foto_thumbnail = getStringSafe(cursor, "foto_thumbnail"),
-                            status_berita = getStringSafe(cursor, "status_berita"),
-                            nama_penulis = detailReal // Kita simpan rincian data di sini cuy
-                        ))
+                        list.add(
+                            Berita(
+                                id = getIntSafe(cursor, "id"),
+                                user_id = getIntSafe(cursor, "user_id"),
+                                kategori_id = getIntSafe(cursor, "kategori_id"),
+                                judul_berita = getStringSafe(cursor, "judul_berita"),
+                                slug = getStringSafe(cursor, "slug"),
+                                isi_berita = getStringSafe(cursor, "isi_berita"),
+                                foto_thumbnail = getStringSafe(cursor, "foto_thumbnail"),
+                                status_berita = getStringSafe(cursor, "status_berita"),
+                                nama_penulis = detailReal // Kita simpan rincian data di sini cuy
+                            )
+                        )
                     } while (cursor.moveToNext())
                 }
             }
@@ -171,7 +201,10 @@ class AnalitikController(context: Context) {
                     cal.add(java.util.Calendar.DAY_OF_YEAR, -6)
                     val skeleton = mutableMapOf<String, Int>()
                     val labels = mutableMapOf<String, String>()
-                    val sdfLabel = java.text.SimpleDateFormat("dd/MM\nEEE", java.util.Locale("id", "ID")) // Format: 15/04 \n Sen
+                    val sdfLabel = java.text.SimpleDateFormat(
+                        "dd/MM\nEEE",
+                        java.util.Locale("id", "ID")
+                    ) // Format: 15/04 \n Sen
 
                     for (i in 0..6) {
                         val dStr = sdfDb.format(cal.time)
@@ -189,7 +222,8 @@ class AnalitikController(context: Context) {
                         if (cursor.moveToFirst()) {
                             do {
                                 val tgl = getStringSafe(cursor, "tgl")
-                                if (skeleton.containsKey(tgl)) skeleton[tgl] = getIntSafe(cursor, "qty")
+                                if (skeleton.containsKey(tgl)) skeleton[tgl] =
+                                    getIntSafe(cursor, "qty")
                             } while (cursor.moveToNext())
                         }
                     }
@@ -200,7 +234,10 @@ class AnalitikController(context: Context) {
                     cal.add(java.util.Calendar.DAY_OF_YEAR, -29)
                     val skeleton = mutableMapOf<String, Int>()
                     val labels = mutableMapOf<String, String>()
-                    val sdfLabel = java.text.SimpleDateFormat("dd", java.util.Locale("id", "ID")) // Format Kalender: 15
+                    val sdfLabel = java.text.SimpleDateFormat(
+                        "dd",
+                        java.util.Locale("id", "ID")
+                    ) // Format Kalender: 15
 
                     for (i in 0..29) {
                         val dStr = sdfDb.format(cal.time)
@@ -218,7 +255,8 @@ class AnalitikController(context: Context) {
                         if (cursor.moveToFirst()) {
                             do {
                                 val tgl = getStringSafe(cursor, "tgl")
-                                if (skeleton.containsKey(tgl)) skeleton[tgl] = getIntSafe(cursor, "qty")
+                                if (skeleton.containsKey(tgl)) skeleton[tgl] =
+                                    getIntSafe(cursor, "qty")
                             } while (cursor.moveToNext())
                         }
                     }
@@ -227,7 +265,20 @@ class AnalitikController(context: Context) {
 
                 "1 Tahun" -> {
                     val skeleton = mutableMapOf<String, Int>()
-                    val bulanNames = arrayOf("Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des")
+                    val bulanNames = arrayOf(
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "Mei",
+                        "Jun",
+                        "Jul",
+                        "Ags",
+                        "Sep",
+                        "Okt",
+                        "Nov",
+                        "Des"
+                    )
 
                     for (i in 1..12) skeleton[i.toString().padStart(2, '0')] = 0
 
@@ -240,7 +291,8 @@ class AnalitikController(context: Context) {
                         if (cursor.moveToFirst()) {
                             do {
                                 val bulan = getStringSafe(cursor, "bulan")
-                                if (skeleton.containsKey(bulan)) skeleton[bulan] = getIntSafe(cursor, "qty")
+                                if (skeleton.containsKey(bulan)) skeleton[bulan] =
+                                    getIntSafe(cursor, "qty")
                             } while (cursor.moveToNext())
                         }
                     }
@@ -267,7 +319,9 @@ class AnalitikController(context: Context) {
                     }
                 }
             }
-        } catch (e: Exception) { e.printStackTrace() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         return result
     }
 }
