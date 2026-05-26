@@ -1,104 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="32dp"
-    android:gravity="center"
-    android:background="#F5F4F0">
+    android:padding="24dp"
+    android:background="@color/fnm_bg">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="FNM TV"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="#D32F2F"
-        android:layout_marginBottom="8dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Masuk ke Akun Anda"
-        android:textSize="16sp"
-        android:textColor="#7A7570"
-        android:layout_marginBottom="32dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="#1A1A1A"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/et_login_email"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#FFFFFF"
-        android:hint="contoh@fnmtv.com"
-        android:inputType="textEmailAddress"
-        android:paddingHorizontal="16dp"
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Password"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="#1A1A1A"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/et_login_password"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#FFFFFF"
-        android:hint="Masukkan password"
-        android:inputType="textPassword"
-        android:paddingHorizontal="16dp"
-        android:layout_marginBottom="24dp"/>
-
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:backgroundTint="#D32F2F"
-        android:text="MASUK"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
-
-    <TextView
-        android:id="@+id/tv_lupa_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lupa Password?"
-        android:textColor="#D32F2F"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
-
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="4dp"
+        android:src="@android:drawable/ic_menu_revert"
+        app:tint="@color/fnm_text" />
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Belum punya akun? "
-            android:textColor="#7A7570"/>
+            android:text="FNM TV"
+            android:textColor="@color/fnm_red"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:fontFamily="serif"
+            android:layout_gravity="center"
+            android:layout_marginBottom="32dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Alamat Email"
+            app:boxBackgroundColor="@color/fnm_white"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Kata Sandi"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/fnm_muted"
+            app:boxBackgroundColor="@color/fnm_white"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/tv_ke_register"
+            android:id="@+id/tvForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Daftar Sekarang"
-            android:textColor="#D32F2F"
+            android:text="Lupa Password?"
+            android:textColor="@color/fnm_red"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:padding="4dp"/>
+
+        <Button
+            android:id="@+id/btnLoginSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Masuk"
+            android:backgroundTint="@color/fnm_red"
+            android:textColor="@color/fnm_white"
+            android:layout_marginTop="24dp"
             android:textStyle="bold"/>
-    </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Belum punya akun? "
+                android:textColor="@color/fnm_text"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/tvToRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daftar disini"
+                android:textColor="@color/fnm_red"
+                android:textStyle="bold"
+                android:textSize="13sp"/>
+
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
