@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.tabs.TabLayout
 import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.data.api.ApiClient
 import kelompok3.fnmtv.fnmtvmobile.data.local.SessionManager
@@ -36,23 +37,26 @@ class MasterViewersActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(this)
         kelolaKondisiNavbarUser()
-        // Mulai tarik data kategori dari API
         fetchKategoriDariApi()
+
+        // 🚧 BLUEPRINT: [beritahasilsearch.blade.php]
+        // TODO: Tangkap event klik tombol pencarian di layout XML
+        binding.btnSearchSubmit.setOnClickListener {
+            val keyword = binding.etSearch.text.toString()
+            if (keyword.isNotEmpty()) {
+                // Lempar ke SearchActivity / SearchFragment bawa keyword-nya
+                Toast.makeText(this, "Mencari: $keyword (Halaman belum dibuat)", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun kelolaKondisiNavbarUser() {
         val cekToken = sessionManager.fetchAuthToken()
 
-        // JIKA USER SUDAH LOGIN (Token tersimpan di memori HP)
         if (!cekToken.isNullOrEmpty()) {
-
-            // Sembunyikan bungkusan tombol "Masuk" & "Daftar" (Grup Linear Lu)
             binding.layoutAuthButtons.visibility = android.view.View.GONE
-
-            // Nyalakan Ikon Profil bunder yang ada di sebelah kanan
             binding.btnProfile.visibility = android.view.View.VISIBLE
 
-            // Aksi ketika Ikon Profil diklik (Memunculkan Option Menu ala Popup)
             binding.btnProfile.setOnClickListener { objekLayar ->
                 val popupMenu = androidx.appcompat.widget.PopupMenu(this, objekLayar)
                 popupMenu.menu.add("Edit Profil")
@@ -61,7 +65,9 @@ class MasterViewersActivity : AppCompatActivity() {
                 popupMenu.setOnMenuItemClickListener { itemPilihan ->
                     when (itemPilihan.title) {
                         "Edit Profil" -> {
-                            Toast.makeText(this, "Membuka Menu Profil...", Toast.LENGTH_SHORT).show()
+                            // 🚧 BLUEPRINT: [userprofil.blade.php]
+                            // TODO: Buka UserProfileActivity buat form update profil & ganti password
+                            Toast.makeText(this, "Membuka Menu Profil... (Halaman belum dibuat)", Toast.LENGTH_SHORT).show()
                             true
                         }
                         "Keluar / Logout" -> {
@@ -75,7 +81,6 @@ class MasterViewersActivity : AppCompatActivity() {
                                 } finally {
                                     sessionManager.clearSession()
                                     Toast.makeText(this@MasterViewersActivity, "Berhasil Keluar!", Toast.LENGTH_SHORT).show()
-
                                     kelolaKondisiNavbarUser()
                                 }
                             }
@@ -84,39 +89,32 @@ class MasterViewersActivity : AppCompatActivity() {
                         else -> false
                     }
                 }
-                popupMenu.show() // Tampilkan menunya ke layar
+                popupMenu.show()
             }
-
         } else {
-            // JIKA GUEST USER (Belum Login / Habis Logout)
             binding.layoutAuthButtons.visibility = android.view.View.VISIBLE
             binding.btnProfile.visibility = android.view.View.GONE
 
-            // Tombol "Masuk" di navbar diklik -> Lempar ke halaman LoginActivity
             binding.btnHeaderLogin.setOnClickListener {
                 startActivity(Intent(this, LoginActivity::class.java))
             }
 
             binding.btnHeaderRegister.setOnClickListener {
+                // 🚧 BLUEPRINT: Register (Bukan dari viewernya langsung sih, tapi butuh juga)
+                // TODO: Buka RegisterActivity buat form daftar akun
                 Toast.makeText(this, "Halaman Register belum kita bikin gank!", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun fetchKategoriDariApi() {
-        // Nembak API nggak boleh di Main Thread biar HP ga nge-freeze, jadi kita pakai Coroutines
         lifecycleScope.launch {
             try {
-                // Panggil ApiClient yang udah lu bikin di awal
                 val response = ApiClient.getApiService(this@MasterViewersActivity).getKategori()
-
                 if (response.isSuccessful && response.body()?.status == "success") {
                     val daftarKategori = response.body()?.data ?: emptyList()
-
-                    // Kalau sukses dapet data, pasang ke Navbar dan Footer!
                     setupNavbar(daftarKategori)
                     setupFooter(daftarKategori)
-
                 } else {
                     Toast.makeText(this@MasterViewersActivity, "Gagal ambil kategori", Toast.LENGTH_SHORT).show()
                 }
@@ -129,15 +127,33 @@ class MasterViewersActivity : AppCompatActivity() {
 
     private fun setupNavbar(kategoriList: List<KategoriItem>) {
         val tabLayout = binding.tabLayoutKategori
-        tabLayout.removeAllTabs() // Bersihin tab default/dummy dulu
+        tabLayout.removeAllTabs()
 
-        // Tab pertama selalu HOME
         tabLayout.addTab(tabLayout.newTab().setText("HOME"))
 
-        // Looping data kategori dari API
         for (kategori in kategoriList) {
-            tabLayout.addTab(tabLayout.newTab().setText(kategori.namaKategori))
+            // Kita simpan ID atau Slug di tag biar nanti gampang ditarik pas diklik
+            val tab = tabLayout.newTab().setText(kategori.namaKategori).setTag(kategori.slug)
+            tabLayout.addTab(tab)
         }
+
+        // 🚧 BLUEPRINT: [tampilantiapkategori.blade.php]
+        // TODO: Bikin aksi pas tab kategori diklik
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.text == "HOME") {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, HomeFragment())
+                        .commit()
+                } else {
+                    val slugKategori = tab?.tag as? String
+                    // Nanti replace dengan KategoriFragment(slugKategori)
+                    Toast.makeText(this@MasterViewersActivity, "Buka kategori: $slugKategori", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     private fun setupFooter(kategoriList: List<KategoriItem>) {
@@ -153,7 +169,7 @@ class MasterViewersActivity : AppCompatActivity() {
                     setTextColor(android.graphics.Color.parseColor("#CCCCCC"))
                     textSize = 13f
                     textAlignment = android.view.View.TEXT_ALIGNMENT_CENTER
-                    setPadding(0, 0, 0, 24) // margin bottom
+                    setPadding(0, 0, 0, 24)
                 }
                 footerCategoryContainer.addView(textView)
             }
