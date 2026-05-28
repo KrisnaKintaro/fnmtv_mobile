@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_rounded"
+    android:backgroundTint="@color/fnm_border"
+    android:padding="2dp"
+    android:layout_marginBottom="24dp">
+
+    <FrameLayout
+        android:id="@+id/heroMain"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_marginBottom="2dp">
+
+        <ImageView
+            android:id="@+id/ivHeroMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@color/fnm_muted"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#CC000000"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvHeroMainCat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/fnm_red"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:text="UMUM"
+                android:textColor="@color/fnm_white"
+                android:textSize="10sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvHeroMainTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Memuat Headline Utama FNM TV..."
+                android:textColor="@color/fnm_white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:fontFamily="serif"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp">
+            <ImageView android:id="@+id/ivHeroSub1" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@color/fnm_muted"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:background="#CC000000" android:padding="8dp" android:orientation="vertical">
+                <TextView android:id="@+id/tvHeroSubCat1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@color/fnm_red" android:paddingHorizontal="4dp" android:text="KATEGORI" android:textColor="@color/fnm_white" android:textSize="8sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvHeroSubTitle1" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Judul Berita 1" android:textColor="@color/fnm_white" android:textSize="11sp" android:textStyle="bold" android:fontFamily="serif" android:maxLines="2" android:ellipsize="end" android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp">
+            <ImageView android:id="@+id/ivHeroSub2" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@color/fnm_muted"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:background="#CC000000" android:padding="8dp" android:orientation="vertical">
+                <TextView android:id="@+id/tvHeroSubCat2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@color/fnm_red" android:paddingHorizontal="4dp" android:text="KATEGORI" android:textColor="@color/fnm_white" android:textSize="8sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvHeroSubTitle2" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Judul Berita 2" android:textColor="@color/fnm_white" android:textSize="11sp" android:textStyle="bold" android:fontFamily="serif" android:maxLines="2" android:ellipsize="end" android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <ImageView android:id="@+id/ivHeroSub3" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@color/fnm_muted"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:background="#CC000000" android:padding="8dp" android:orientation="vertical">
+                <TextView android:id="@+id/tvHeroSubCat3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@color/fnm_red" android:paddingHorizontal="4dp" android:text="KATEGORI" android:textColor="@color/fnm_white" android:textSize="8sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/tvHeroSubTitle3" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Judul Berita 3" android:textColor="@color/fnm_white" android:textSize="11sp" android:textStyle="bold" android:fontFamily="serif" android:maxLines="2" android:ellipsize="end" android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

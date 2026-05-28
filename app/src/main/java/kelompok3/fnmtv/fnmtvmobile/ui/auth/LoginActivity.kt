@@ -1,0 +1,91 @@
+package kelompok3.fnmtv.fnmtvmobile.ui.auth
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import kelompok3.fnmtv.fnmtvmobile.data.local.SessionManager
+import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityLoginBinding
+import kelompok3.fnmtv.fnmtvmobile.ui.admin.AdminUserCrudActivity
+import kelompok3.fnmtv.fnmtvmobile.ui.viewer.MasterViewersActivity
+
+class LoginActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityLoginBinding
+    private val viewModel: AuthViewModel by viewModels() // Nyantol ke otak pengolah data
+    private lateinit var sessionManager: SessionManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        sessionManager = SessionManager(this)
+
+        // 1. Amati Variabel Loading (Kondisi tombol pas loading API)
+        viewModel.isLoading.observe(this) { loading ->
+            binding.btnLoginSubmit.isEnabled = !loading
+            binding.btnLoginSubmit.text = if (loading) "Memproses..." else "Masuk"
+        }
+
+        viewModel.loginResult.observe(this) { response ->
+            if (response != null && response.isSuccessful && response.body()?.status == "success") {
+                val authData = response.body()
+
+                // 🔥 Merahnya bakal langsung hilang setelah Step 1 lu lakuin!
+                val userData = authData?.data ?: authData?.user
+
+                // PIPA DATA BERHASIL: Ambil data JSON dan jebloskan ke memori lokal HP
+                sessionManager.saveSession(
+                    token = authData?.token ?: "",
+                    username = userData?.username ?: "Tanpa Nama",
+                    email = userData?.email ?: ""
+                )
+
+                val roleUser = userData?.role
+                Toast.makeText(this, "Login Berhasil, Role: $roleUser, Username:  ${userData?.username}", Toast.LENGTH_LONG).show()
+
+                // Pengecekan Role kebal huruf besar/kecil
+                if (roleUser.equals("admin", ignoreCase = true)) {
+                    // Jalur Khusus buat Admin
+                    val intent = Intent(this, AdminUserCrudActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+                } else {
+                    // Jalur Normal buat Viewer/User lain
+                    val intent = Intent(this, MasterViewersActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+                }
+            } else {
+                val kodeError = response?.code()
+                val pesanError = response?.errorBody()?.string()
+
+                Log.e("API_LOGIN_ERROR", "Kode HTTP: $kodeError | Body: $pesanError")
+                Toast.makeText(this, "Error $kodeError: Cek Logcat cuy!", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        // 3. Kejadian saat tombol Masuk diklik
+        binding.btnLoginSubmit.setOnClickListener {
+            val inputEmail = binding.etEmail.text.toString().trim()
+            val inputPas = binding.etPassword.text.toString().trim()
+
+            if (inputEmail.isEmpty() || inputPas.isEmpty()) {
+                Toast.makeText(this, "Wajib diisi semua gank!", Toast.LENGTH_SHORT).show()
+            } else {
+                // Oper isi ketikan ke ViewModel buat diproses tembak ke internet
+                viewModel.prosesLogin(inputEmail, inputPas)
+            }
+        }
+
+        binding.btnBack.setOnClickListener {
+            // Perintah finish() akan mematikan layar Login dan kembali ke layar sebelumnya (MasterViewersActivity)
+            finish()
+        }
+    }
+}
