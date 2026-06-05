@@ -16,6 +16,7 @@ import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.KategoriItem
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterViewersBinding
 import kelompok3.fnmtv.fnmtvmobile.ui.auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.HomeFragment
+import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.KategoriFragment
 import kotlinx.coroutines.launch
 
 class MasterViewersActivity : AppCompatActivity() {
@@ -141,15 +142,18 @@ class MasterViewersActivity : AppCompatActivity() {
         // TODO: Bikin aksi pas tab kategori diklik
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                val transaction = supportFragmentManager.beginTransaction()
+
                 if (tab?.text == "HOME") {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, HomeFragment())
-                        .commit()
+                    // Kembali ke Home yang ada Headline & Trending
+                    transaction.replace(R.id.fragment_container, HomeFragment())
                 } else {
-                    val slugKategori = tab?.tag as? String
-                    // Nanti replace dengan KategoriFragment(slugKategori)
-                    Toast.makeText(this@MasterViewersActivity, "Buka kategori: $slugKategori", Toast.LENGTH_SHORT).show()
+                    // Pindah ke halaman Kategori Berita
+                    val slugKategori = tab?.tag as? String ?: ""
+                    val namaKategori = tab?.text.toString()
+                    transaction.replace(R.id.fragment_container, KategoriFragment.newInstance(slugKategori, namaKategori))
                 }
+                transaction.commit()
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
