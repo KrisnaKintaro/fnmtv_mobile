@@ -15,6 +15,7 @@ import kelompok3.fnmtv.fnmtvmobile.data.local.SessionManager
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.KategoriItem
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityMasterViewersBinding
 import kelompok3.fnmtv.fnmtvmobile.ui.auth.LoginActivity
+import kelompok3.fnmtv.fnmtvmobile.ui.auth.RegisterActivity
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.HomeFragment
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.KategoriFragment
 import kotlinx.coroutines.launch
@@ -101,27 +102,34 @@ class MasterViewersActivity : AppCompatActivity() {
             }
 
             binding.btnHeaderRegister.setOnClickListener {
-                // 🚧 BLUEPRINT: Register (Bukan dari viewernya langsung sih, tapi butuh juga)
-                // TODO: Buka RegisterActivity buat form daftar akun
-                Toast.makeText(this, "Halaman Register belum kita bikin gank!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, RegisterActivity::class.java))
             }
         }
     }
 
     private fun fetchKategoriDariApi() {
         lifecycleScope.launch {
-            try {
-                val response = ApiClient.getApiService(this@MasterViewersActivity).getKategori()
-                if (response.isSuccessful && response.body()?.status == "success") {
-                    val daftarKategori = response.body()?.data ?: emptyList()
-                    setupNavbar(daftarKategori)
-                    setupFooter(daftarKategori)
-                } else {
-                    Toast.makeText(this@MasterViewersActivity, "Gagal ambil kategori", Toast.LENGTH_SHORT).show()
+            var isSuccess = false
+
+            // Terus muter sampai isSuccess jadi true
+            while (!isSuccess) {
+                try {
+                    val response = ApiClient.getApiService(this@MasterViewersActivity).getKategori()
+
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        val daftarKategori = response.body()?.data ?: emptyList()
+                        setupNavbar(daftarKategori)
+                        setupFooter(daftarKategori)
+
+                        isSuccess = true
+                    } else {
+                        Log.e("API_RETRY", "Gagal dapet kategori, mencoba lagi dalam 2 detik...")
+                        kotlinx.coroutines.delay(2000)
+                    }
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Koneksi Error: ${e.message}. mencoba lagi dalam 2 detik...")
+                    kotlinx.coroutines.delay(2000)
                 }
-            } catch (e: Exception) {
-                Log.e("API_ERROR", "Koneksi Error: ${e.message}")
-                Toast.makeText(this@MasterViewersActivity, "Cek koneksi internet cuy!", Toast.LENGTH_SHORT).show()
             }
         }
     }

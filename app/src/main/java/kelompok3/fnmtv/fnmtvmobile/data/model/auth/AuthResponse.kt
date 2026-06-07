@@ -6,6 +6,7 @@ data class AuthResponse(
     val status: String?,
     val message: String?,
     val token: String?, // Token Sanctum (Bearer Token) buat gembok keamanan API
+    val redirect: String?,
     val data: User?,    // Memasukkan cetakan model User di atas
     val user: User?
 )
