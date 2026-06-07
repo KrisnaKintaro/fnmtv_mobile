@@ -18,6 +18,7 @@ import kelompok3.fnmtv.fnmtvmobile.ui.auth.LoginActivity
 import kelompok3.fnmtv.fnmtvmobile.ui.auth.RegisterActivity
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.HomeFragment
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.KategoriFragment
+import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.SearchFragment
 import kotlinx.coroutines.launch
 
 class MasterViewersActivity : AppCompatActivity() {
@@ -41,13 +42,17 @@ class MasterViewersActivity : AppCompatActivity() {
         kelolaKondisiNavbarUser()
         fetchKategoriDariApi()
 
-        // 🚧 BLUEPRINT: [beritahasilsearch.blade.php]
-        // TODO: Tangkap event klik tombol pencarian di layout XML
         binding.btnSearchSubmit.setOnClickListener {
-            val keyword = binding.etSearch.text.toString()
+            val keyword = binding.etSearch.text.toString().trim()
             if (keyword.isNotEmpty()) {
-                // Lempar ke SearchActivity / SearchFragment bawa keyword-nya
-                Toast.makeText(this, "Mencari: $keyword (Halaman belum dibuat)", Toast.LENGTH_SHORT).show()
+                val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
+
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SearchFragment.newInstance(keyword))
+                    .commit()
+            } else {
+                Toast.makeText(this, "Ketikkan kata kunci dulu!", Toast.LENGTH_SHORT).show()
             }
         }
     }

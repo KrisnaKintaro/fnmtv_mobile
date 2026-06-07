@@ -73,4 +73,6 @@ dependencies {
     // PhotoView buat bikin gambar bisa di-zoom (Pinch-to-zoom)
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
 
+    // Volley
+    implementation("com.android.volley:volley:1.2.1")
 }
