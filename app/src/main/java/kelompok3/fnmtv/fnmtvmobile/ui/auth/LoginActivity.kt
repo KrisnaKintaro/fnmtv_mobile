@@ -34,7 +34,15 @@ class LoginActivity : AppCompatActivity() {
             if (response != null && response.isSuccessful && response.body()?.status == "success") {
                 val authData = response.body()
 
-                // 🔥 Merahnya bakal langsung hilang setelah Step 1 lu lakuin!
+                if (authData?.redirect == "/email/verify") {
+                    androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle("Verifikasi Diperlukan")
+                        .setMessage("Akun anda belum diverifikasi! Cek email yang barusan didaftarin dan klik link verifikasinya.")
+                        .setPositiveButton("Oke, Ngerti") { _, _ -> }
+                        .show()
+                    return@observe // BERHENTI DI SINI, jangan simpen token atau pindah layar!
+                }
+
                 val userData = authData?.data ?: authData?.user
 
                 // PIPA DATA BERHASIL: Ambil data JSON dan jebloskan ke memori lokal HP
@@ -86,6 +94,36 @@ class LoginActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             // Perintah finish() akan mematikan layar Login dan kembali ke layar sebelumnya (MasterViewersActivity)
             finish()
+        }
+
+        binding.tvToRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        viewModel.forgotPassResult.observe(this) { response ->
+            if (response != null && response.isSuccessful && response.body()?.status == "success") {
+                Toast.makeText(this, response.body()?.message ?: "Link reset terkirim ke email lu!", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Gagal ngirim link! Pastikan email lu emang beneran terdaftar cuy.", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        binding.tvForgotPassword.setOnClickListener {
+            val viewDialog = layoutInflater.inflate(kelompok3.fnmtv.fnmtvmobile.R.layout.dialog_forgot_password, null)
+            val etEmail = viewDialog.findViewById<com.google.android.material.textfield.TextInputEditText>(kelompok3.fnmtv.fnmtvmobile.R.id.etForgotEmail)
+
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setView(viewDialog)
+                .setPositiveButton("Kirim Link") { _, _ ->
+                    val email = etEmail.text.toString().trim()
+                    if (email.isNotEmpty()) {
+                        viewModel.prosesForgotPassword(email)
+                    } else {
+                        Toast.makeText(this, "Email nggak boleh kosong cuy!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .setNegativeButton("Batal", null)
+                .show()
         }
     }
 }

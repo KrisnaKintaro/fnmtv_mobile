@@ -27,6 +27,8 @@
         <activity
             android:name=".ui.admin.AdminUserCrudActivity"
             android:exported="false" />
+
+        <activity android:name=".ui.auth.RegisterActivity" />
     </application>
 
 </manifest>
