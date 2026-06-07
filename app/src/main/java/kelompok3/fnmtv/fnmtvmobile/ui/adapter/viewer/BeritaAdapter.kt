@@ -7,8 +7,13 @@ import com.bumptech.glide.Glide
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.BeritaItem
 import kelompok3.fnmtv.fnmtvmobile.databinding.ItemBeritaViewerBinding
 
-class BeritaAdapter(private val listBerita: List<BeritaItem>) :
+class BeritaAdapter(private var listBerita: List<BeritaItem>) :
     RecyclerView.Adapter<BeritaAdapter.BeritaViewHolder>() {
+
+    fun updateData(newList: List<BeritaItem>) {
+        listBerita = newList
+        notifyDataSetChanged()
+    }
 
     inner class BeritaViewHolder(val binding: ItemBeritaViewerBinding) :
         RecyclerView.ViewHolder(binding.root) {
