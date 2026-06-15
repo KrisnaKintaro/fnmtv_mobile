@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Warna Utama Aplikasi -->
     <color name="fnm_red">#CC0000</color>
     <color name="fnm_red_dark">#990000</color>
     <color name="fnm_bg">#F5F4F0</color>
@@ -7,4 +8,11 @@
     <color name="fnm_text">#1A1A1A</color>
     <color name="fnm_muted">#7A7570</color>
     <color name="fnm_white">#FFFFFF</color>
+
+    <!-- Alias untuk fragment_search.xml -->
+    <color name="bg_cream">@color/fnm_bg</color>
+    <color name="text_main">@color/fnm_text</color>
+    <color name="text_muted">@color/fnm_muted</color>
+    <color name="red_primary">@color/fnm_red</color>
+    <color name="border_gray">@color/fnm_border</color>
 </resources>
