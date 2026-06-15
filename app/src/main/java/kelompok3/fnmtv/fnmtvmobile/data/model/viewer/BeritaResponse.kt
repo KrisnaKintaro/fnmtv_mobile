@@ -20,8 +20,21 @@ data class BeritaItem(
     @SerializedName("foto_thumbnail") val fotoThumbnail: String?,
     @SerializedName("waktu_publikasi") val waktuPublikasi: String?,
     @SerializedName("jumlah_view") val jumlahView: String?,
+    @SerializedName("isi_berita") val isiBerita: String?,
 
+    // Metadata Tambahan
     val kategori: KategoriBerita?,
+    val user: UserBerita?,
+    
+    // Relationship Reaksi & Komentar (Disesuaikan dengan Laravel)
+    @SerializedName("reaksi_count") val reaksiCount: Map<String, Int>? = null,
+    val komentars: List<KomentarItem>? = null
+)
+
+data class KomentarItem(
+    val id: Int?,
+    @SerializedName("isi_komentar") val isiKomentar: String?,
+    @SerializedName("created_at") val createdAt: String?,
     val user: UserBerita?
 )
 
