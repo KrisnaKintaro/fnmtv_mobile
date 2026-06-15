@@ -37,7 +37,7 @@ object ApiClient {
         val cookies = cookieJar.loadForRequest(request.url)
         for (cookie in cookies) {
             if (cookie.name == "XSRF-TOKEN") {
-                // 🔥 INI KUNCINYA: Decode dulu tokennya sebelum ditempel ke Header!
+                // Decode dulu tokennya sebelum ditempel ke Header!
                 val decodedToken = java.net.URLDecoder.decode(cookie.value, "UTF-8")
                 builder.addHeader("X-XSRF-TOKEN", decodedToken)
             }

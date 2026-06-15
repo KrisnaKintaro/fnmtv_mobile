@@ -39,30 +39,29 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchDataHome() {
-        // Pakai viewLifecycleOwner biar lebih aman buat Fragment
         viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val response = ApiClient.getApiService(requireContext()).getSemuaBerita()
+            var isSuccess = false
 
-                if (response.isSuccessful) {
-                    val body = response.body()
+            while (!isSuccess) {
+                try {
+                    val response = ApiClient.getApiService(requireContext()).getSemuaBerita()
 
-                    if (body?.status == "success") {
-                        val dataBerita = body.data
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        val dataBerita = response.body()?.data
 
-                        // Render ke layar
                         dataBerita?.headline?.let { renderHeroSection(it) }
                         dataBerita?.terbaru?.let { renderBeritaTerbaru(it) }
                         dataBerita?.trending?.let { renderTrending(it) }
+
+                        isSuccess = true
                     } else {
-                        Toast.makeText(requireContext(), "Status API bukan success!", Toast.LENGTH_LONG).show()
+                        Log.e("API_RETRY", "Gagal dapet berita, mencoba lagi dalam 2 detik...")
+                        kotlinx.coroutines.delay(2000)
                     }
-                } else {
-                    Toast.makeText(requireContext(), "Gagal HTTP: ${response.code()}", Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    Log.e("API_CRASH", "Pesan Error: ${e.message}. Mencoba lagi dalam 2 detik...")
+                    kotlinx.coroutines.delay(2000)
                 }
-            } catch (e: Exception) {
-                Log.e("API_CRASH", "Pesan Error: ${e.message}")
-                Toast.makeText(requireContext(), "CRASH: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

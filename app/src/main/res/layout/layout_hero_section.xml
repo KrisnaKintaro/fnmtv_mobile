@@ -12,7 +12,8 @@
         android:id="@+id/heroMain"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:layout_marginBottom="2dp">
+        android:layout_marginBottom="2dp"
+        android:foreground="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/ivHeroMain"
@@ -60,10 +61,12 @@
         android:orientation="horizontal">
 
         <FrameLayout
+            android:id="@+id/heroSub1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginEnd="2dp">
+            android:layout_marginEnd="2dp"
+            android:foreground="?attr/selectableItemBackground">
             <ImageView android:id="@+id/ivHeroSub1" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@color/fnm_muted"/>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:background="#CC000000" android:padding="8dp" android:orientation="vertical">
                 <TextView android:id="@+id/tvHeroSubCat1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@color/fnm_red" android:paddingHorizontal="4dp" android:text="KATEGORI" android:textColor="@color/fnm_white" android:textSize="8sp" android:textStyle="bold"/>
@@ -72,10 +75,12 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/heroSub2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginEnd="2dp">
+            android:layout_marginEnd="2dp"
+            android:foreground="?attr/selectableItemBackground">
             <ImageView android:id="@+id/ivHeroSub2" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@color/fnm_muted"/>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:background="#CC000000" android:padding="8dp" android:orientation="vertical">
                 <TextView android:id="@+id/tvHeroSubCat2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@color/fnm_red" android:paddingHorizontal="4dp" android:text="KATEGORI" android:textColor="@color/fnm_white" android:textSize="8sp" android:textStyle="bold"/>
@@ -84,9 +89,11 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/heroSub3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:foreground="?attr/selectableItemBackground">
             <ImageView android:id="@+id/ivHeroSub3" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@color/fnm_muted"/>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:background="#CC000000" android:padding="8dp" android:orientation="vertical">
                 <TextView android:id="@+id/tvHeroSubCat3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@color/fnm_red" android:paddingHorizontal="4dp" android:text="KATEGORI" android:textColor="@color/fnm_white" android:textSize="8sp" android:textStyle="bold"/>

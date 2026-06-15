@@ -5,7 +5,11 @@ import kelompok3.fnmtv.fnmtvmobile.data.model.admin.UserResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.BeritaResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.KategoriResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.auth.AuthResponse
+import kelompok3.fnmtv.fnmtvmobile.data.model.auth.ForgotPasswordRequest
+import kelompok3.fnmtv.fnmtvmobile.data.model.auth.ForgotPasswordResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.auth.LoginRequest
+import kelompok3.fnmtv.fnmtvmobile.data.model.auth.RegisterRequest
+import kelompok3.fnmtv.fnmtvmobile.data.model.auth.RegisterResponse
 
 import retrofit2.Response
 import retrofit2.http.Headers
@@ -37,6 +41,16 @@ interface ApiService {
     suspend fun loginUser(
         @Body request: LoginRequest // @Body artinya data dikirim sebagai raw JSON di body request
     ): Response<AuthResponse>
+
+    @POST("auth/register")
+    suspend fun registerUser(
+        @Body request: RegisterRequest
+    ): Response<RegisterResponse>
+
+    @POST("auth/forgot-password")
+    suspend fun sendResetLink(
+        @Body request: ForgotPasswordRequest
+    ): Response<ForgotPasswordResponse>
 
     @POST("auth/logout")
     suspend fun logoutUser(): Response<Unit>
