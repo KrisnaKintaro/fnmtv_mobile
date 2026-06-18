@@ -84,13 +84,15 @@ interface ApiService {
     // --- Api Update Profil Terpadu ---
     // ✅ FIX: Ditambahkan Field current_password & new_password agar password ikut terkirim ke Laravel
     @FormUrlEncoded
-    @PUT("api/viewers/update-profil")
+    @POST("api/viewers/update-profil")
     suspend fun updateProfilViewer(
         @Header("Authorization") token: String,
-        @Field("nama") username: String,
+        @Field("_method") method: String = "PUT",
+        @Field("username") username: String,
         @Field("email") email: String,
         @Field("current_password") currentPassword: String,
-        @Field("new_password") newPassword: String
+        @Field("password") newPassword: String,
+        @Field("password_confirmation") konfirmasi: String
     ): Response<Unit>
 
     // --- Api Manajemen User (Admin - Prefix dipasangkan 'api/') ---
