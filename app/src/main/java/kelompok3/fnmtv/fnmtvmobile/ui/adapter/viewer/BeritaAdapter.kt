@@ -12,10 +12,39 @@ import kelompok3.fnmtv.fnmtvmobile.ui.viewer.DetailBeritaActivity
 class BeritaAdapter(private var listBerita: List<BeritaItem>) :
     RecyclerView.Adapter<BeritaAdapter.BeritaViewHolder>() {
 
+    // ── Simpan data asli supaya filter bisa di-reset ──────────────────────
+    private var listAsli: List<BeritaItem> = listBerita.toList()
+
+    // ── updateData: tetap sama persis seperti milik Anda ─────────────────
     fun updateData(newList: List<BeritaItem>) {
         listBerita = newList
+        listAsli   = newList.toList()   // perbarui juga data asli
         notifyDataSetChanged()
     }
+
+    // ── FUNGSI BARU: filter berdasarkan keyword ───────────────────────────
+    fun filter(keyword: String) {
+        listBerita = if (keyword.isBlank()) {
+            listAsli.toList()
+        } else {
+            val q = keyword.lowercase().trim()
+            listAsli.filter { berita ->
+                berita.judulBerita?.lowercase()?.contains(q) == true ||
+                        berita.kategori?.namaKategori?.lowercase()?.contains(q) == true
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    // ── FUNGSI BARU: reset ke semua data ──────────────────────────────────
+    fun resetFilter() {
+        listBerita = listAsli.toList()
+        notifyDataSetChanged()
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Kode asli Anda — tidak ada yang diubah di bawah ini
+    // ─────────────────────────────────────────────────────────────────────
 
     inner class BeritaViewHolder(val binding: ItemBeritaViewerBinding) :
         RecyclerView.ViewHolder(binding.root) {

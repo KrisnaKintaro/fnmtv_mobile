@@ -1,7 +1,6 @@
 package kelompok3.fnmtv.fnmtvmobile.ui.viewer
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -28,6 +27,7 @@ class DetailBeritaActivity : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
     private lateinit var komentarAdapter: KomentarAdapter
     private var beritaSlug: String? = null
+    private var beritaId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,13 +36,11 @@ class DetailBeritaActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(this)
 
-        // 1. Setup Toolbar
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        // 2. Ambil Slug dari Intent
         beritaSlug = intent.getStringExtra("BERITA_SLUG")
 
         if (beritaSlug != null) {
@@ -65,12 +63,14 @@ class DetailBeritaActivity : AppCompatActivity() {
     }
 
     private fun setupActionListeners(slug: String) {
-        binding.btnLike.setOnClickListener { handleReaction(slug, "like") }
-        binding.btnLove.setOnClickListener { handleReaction(slug, "love") }
-        binding.btnWow.setOnClickListener { handleReaction(slug, "wow") }
+        // Reaksi menggunakan bahasa Indonesia sesuai dengan ReaksiController.php
+        binding.btnLike.setOnClickListener { handleReaction(slug, "suka") }
+        binding.btnLove.setOnClickListener { handleReaction(slug, "cinta") }
+        binding.btnWow.setOnClickListener  { handleReaction(slug, "kaget") }
 
         binding.btnKirimKomentar.setOnClickListener {
-            if (sessionManager.fetchAuthToken().isNullOrEmpty()) {
+            val token = sessionManager.fetchAuthToken()
+            if (token.isNullOrEmpty()) {
                 showLoginRequiredDialog()
             } else {
                 val textKomentar = binding.etKomentar.text.toString().trim()
@@ -110,12 +110,18 @@ class DetailBeritaActivity : AppCompatActivity() {
 
     private fun fetchDetailBerita(slug: String) {
         binding.progressBar.visibility = View.VISIBLE
-        
+
         lifecycleScope.launch {
             try {
                 val response = ApiClient.getApiService(this@DetailBeritaActivity).getDetailBerita(slug)
-                if (response.isSuccessful && response.body()?.status == "success") {
-                    response.body()?.data?.let { displayBerita(it) }
+
+                if (response.isSuccessful) {
+                    response.body()?.data?.let {
+                        beritaId = it.id
+                        displayBerita(it)
+                    }
+                } else {
+                    Log.e("API_ERROR", "Gagal load berita: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("DETAIL_ERROR", e.message.toString())
@@ -131,76 +137,70 @@ class DetailBeritaActivity : AppCompatActivity() {
         binding.tvDetailAuthor.text = "Oleh: ${berita.user?.username ?: "Admin FNM"}"
         binding.tvDetailTanggal.text = berita.waktuPublikasi?.substringBefore("T") ?: ""
         binding.tvDetailViews.text = "👁 ${berita.jumlahView ?: "0"} views"
-        
+
         val htmlContent = berita.isiBerita ?: "Tidak ada konten."
         binding.tvDetailContent.text = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-        binding.btnLike.text = "👍 ${reflectCount(berita, "getLikeCount")}"
-        binding.btnLove.text = "❤️ ${reflectCount(berita, "getLoveCount")}"
-        binding.btnWow.text = "😲 ${reflectCount(berita, "getWowCount")}"
+        // ✅ PERBAIKAN FINAL: Menggunakan syntax [key] untuk menghindari konflik library
+        val rekap = berita.reaksiRekap
+        binding.btnLike.text = "👍 ${rekap?.suka ?: 0}"
+        binding.btnLove.text = "❤️ ${rekap?.cinta ?: 0}"
+        binding.btnWow.text  = "😲 ${rekap?.kaget ?: 0}"
 
-        try {
-            val list = berita.javaClass.getMethod("getKomentar").invoke(berita) as? List<Any> ?: listOf()
-            if (list.isEmpty()) {
-                binding.tvEmptyKomentar.visibility = View.VISIBLE
-                binding.rvKomentar.visibility = View.GONE
-            } else {
-                binding.tvEmptyKomentar.visibility = View.GONE
-                binding.rvKomentar.visibility = View.VISIBLE
-                komentarAdapter.updateData(list)
-            }
-        } catch (e: Exception) {
-            binding.tvEmptyKomentar.visibility = View.VISIBLE
-        }
+        val listKomentar = berita.komentar ?: emptyList()
+        komentarAdapter.updateData(listKomentar)
 
-        val imgUrl = if (berita.fotoThumbnail?.startsWith("http") == true) berita.fotoThumbnail 
-                     else "https://baru.fenomenatv.com/uploads/thumbnail/${berita.fotoThumbnail}"
+        binding.tvEmptyKomentar.visibility = if (listKomentar.isEmpty()) View.VISIBLE else View.GONE
+        binding.rvKomentar.visibility = if (listKomentar.isEmpty()) View.GONE else View.VISIBLE
 
-        Glide.with(this).load(imgUrl).centerCrop().placeholder(android.R.drawable.ic_menu_gallery).into(binding.ivDetailThumbnail)
+        val imgUrl = if (berita.fotoThumbnail?.startsWith("http") == true) berita.fotoThumbnail
+        else "https://baru.fenomenatv.com/uploads/thumbnail/${berita.fotoThumbnail}"
+
+        Glide.with(this).load(imgUrl).centerCrop().into(binding.ivDetailThumbnail)
     }
 
     private fun postReaksi(slug: String, jenis: String) {
+        val id = beritaId ?: return
         val token = "Bearer ${sessionManager.fetchAuthToken()}"
-        val requestBody = mapOf(
-            "slug" to slug,
-            "jenis_reaksi" to jenis
-        )
+
         lifecycleScope.launch {
             try {
                 val response = ApiClient.getApiService(this@DetailBeritaActivity)
-                    .kirimReaksi(token, requestBody)
+                    .kirimReaksi(token, id, jenis)
+
                 if (response.isSuccessful) {
-                    Toast.makeText(this@DetailBeritaActivity, "Reaksi terkirim!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DetailBeritaActivity, "Reaksi berhasil!", Toast.LENGTH_SHORT).show()
                     fetchDetailBerita(slug)
+                } else {
+                    Log.e("REAKSI_DEBUG", "Gagal: ${response.errorBody()?.string()}")
+                    Toast.makeText(this@DetailBeritaActivity, "Gagal mengirim reaksi", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@DetailBeritaActivity, "Gagal terhubung ke server", Toast.LENGTH_SHORT).show()
+                Log.e("REAKSI_ERROR", e.message.toString())
             }
         }
     }
 
     private fun postKomentar(slug: String, isi: String) {
+        val id = beritaId ?: return
         val token = "Bearer ${sessionManager.fetchAuthToken()}"
-        val requestBody = mapOf(
-            "slug" to slug,
-            "isi_komentar" to isi
-        )
+
         lifecycleScope.launch {
             try {
                 val response = ApiClient.getApiService(this@DetailBeritaActivity)
-                    .kirimKomentar(token, requestBody)
+                    .kirimKomentar(token, id, isi)
+
                 if (response.isSuccessful) {
-                    Toast.makeText(this@DetailBeritaActivity, "Komentar terkirim!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DetailBeritaActivity, "Komentar terkirim!", Toast.LENGTH_LONG).show()
                     binding.etKomentar.text.clear()
                     fetchDetailBerita(slug)
+                } else {
+                    Log.e("KOMENTAR_DEBUG", "Gagal: ${response.errorBody()?.string()}")
+                    Toast.makeText(this@DetailBeritaActivity, "Gagal mengirim komentar", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@DetailBeritaActivity, "Gagal mengirim komentar", Toast.LENGTH_SHORT).show()
+                Log.e("KOMENTAR_ERROR", e.message.toString())
             }
         }
-    }
-
-    private fun reflectCount(obj: Any, methodName: String): Int {
-        return try { obj.javaClass.getMethod(methodName).invoke(obj) as? Int ?: 0 } catch (e: Exception) { 0 }
     }
 }

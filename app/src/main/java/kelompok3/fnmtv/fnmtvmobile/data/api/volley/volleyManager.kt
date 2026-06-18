@@ -43,6 +43,7 @@ class VolleyManager(context: Context) {
                                 fotoThumbnail = obj.optString("foto_thumbnail"),
                                 waktuPublikasi = obj.optString("waktu_publikasi"),
                                 jumlahView = obj.optString("jumlah_view"),
+                                isiBerita = obj.optString("isi_berita"), // ← TAMBAH INI
                                 kategori = KategoriBerita(namaKategori),
                                 user = null
                             )
