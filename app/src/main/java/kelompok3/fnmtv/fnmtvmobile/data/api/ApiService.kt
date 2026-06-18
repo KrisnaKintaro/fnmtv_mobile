@@ -11,39 +11,40 @@ import kelompok3.fnmtv.fnmtvmobile.data.model.auth.LoginRequest
 import kelompok3.fnmtv.fnmtvmobile.data.model.auth.RegisterRequest
 import kelompok3.fnmtv.fnmtvmobile.data.model.auth.RegisterResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.DetailBeritaResponse
-
-import okhttp3.RequestBody
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
+import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.IklanResponse
 
 import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
-    @GET("../sanctum/csrf-cookie")
+
+    @GET("sanctum/csrf-cookie")
     suspend fun getCsrfCookie(): Response<Unit>
 
-    @Headers("Accept: application/json")
-
-    // --- Api Viewer ---
-    @GET("viewers/berita")
+    // --- Api Viewer (Tanpa Login) ---
+    @GET("api/viewers/berita")
     suspend fun getSemuaBerita(): Response<BeritaResponse>
 
-    @GET("viewers/kategori")
+    @GET("api/viewers/kategori")
     suspend fun getKategori(): Response<KategoriResponse>
 
-    @GET("viewers/berita/{slug}")
+    // Mengambil berita berdasarkan kategori menggunakan slug sesuai route Laravel
+    @GET("api/viewers/kategori/{slug}")
+    suspend fun getBeritaByKategori(@Path("slug") slug: String): Response<BeritaResponse>
+
+    @GET("api/viewers/berita/{slug}")
     suspend fun getDetailBerita(@Path("slug") slug: String): Response<DetailBeritaResponse>
 
-    @GET("viewers/berita/search")
-    suspend fun searchBerita(@Query("keyword") keyword: String): Response<BeritaResponse>
+    // Endpoint search disesuaikan dengan Route::get('/search') di Laravel
+    @GET("api/viewers/search")
+    suspend fun searchBerita(@Query("q") keyword: String): Response<BeritaResponse>
 
-    @GET("viewers/berita")
-    suspend fun getBeritaByKategori(@Query("kategori_id") kategoriId: Int): Response<BeritaResponse>
+    @GET("api/viewers/iklan")
+    suspend fun getIklan(): Response<IklanResponse>
 
-    // --- Api Interaksi (Reaksi & Komentar) ---
+    // --- Api Interaksi (Reaksi & Komentar - Butuh Login) ---
     @FormUrlEncoded
-    @POST("viewers/toggleReaksi")
+    @POST("api/viewers/toggleReaksi")
     suspend fun kirimReaksi(
         @Header("Authorization") token: String,
         @Field("berita_id") beritaId: Int,
@@ -51,7 +52,7 @@ interface ApiService {
     ): Response<Unit>
 
     @FormUrlEncoded
-    @POST("viewers/tambahKomentar")
+    @POST("api/viewers/tambahKomentar")
     suspend fun kirimKomentar(
         @Header("Authorization") token: String,
         @Field("berita_id") beritaId: Int,
@@ -59,48 +60,49 @@ interface ApiService {
     ): Response<Unit>
 
     // --- Api Auth ---
-    @POST("auth/login")
+    @POST("api/auth/login")
     suspend fun loginUser(@Body request: LoginRequest): Response<AuthResponse>
 
-    @POST("auth/register")
+    @POST("api/auth/register")
     suspend fun registerUser(@Body request: RegisterRequest): Response<RegisterResponse>
 
-    @POST("auth/forgot-password")
+    @POST("api/auth/forgot-password")
     suspend fun sendResetLink(@Body request: ForgotPasswordRequest): Response<ForgotPasswordResponse>
 
-    @POST("auth/logout")
+    @POST("api/auth/logout")
     suspend fun logoutUser(): Response<Unit>
 
-    // --- Api Manajemen User (Admin) ---
-    @GET("admin/manajemen_user/ambilData")
-    suspend fun getAllUsers(): Response<UserResponse>
-
-    @POST("admin/manajemen_user/tambahData")
-    suspend fun addUser(@Body user: User): Response<Unit>
-
-    @PUT("admin/manajemen_user/ubahData/{id}")
-    suspend fun updateUser(@Path("id") id: Int, @Body user: User): Response<Unit>
-
-    @DELETE("admin/manajemen_user/hapusData/{id}")
-    suspend fun deleteUser(@Path("id") id: Int): Response<Unit>
-
-    // --- Api Update Profil & Password Terpadu (Viewer) ---
     @FormUrlEncoded
-    @PUT("viewers/update-profil")
-    suspend fun updateProfilViewer(
-        @Header("Authorization") token: String,
-        @Field("nama pengguna") username: String,
-        @Field("email") email: String,
-        @Field("kata_sandi_saat_ini") currentPassword: String,
-        @Field("kata sandi") passwordBaru: String
-    ): Response<Unit>
-
-    @FormUrlEncoded
-    @POST("auth/ganti-password")
+    @POST("api/auth/ganti-password")
     suspend fun gantiPasswordViewer(
         @Header("Authorization") token: String,
         @Field("password_lama") passwordLama: String,
         @Field("password_baru") passwordBaru: String,
-        @Field("password_baru_confirmation") konfirmasiPassword: String // Sesuaikan dengan key parameter di AuthController Laravel
+        @Field("password_baru_confirmation") konfirmasiPassword: String
     ): Response<Unit>
+
+    // --- Api Update Profil Terpadu ---
+    // ✅ FIX: Ditambahkan Field current_password & new_password agar password ikut terkirim ke Laravel
+    @FormUrlEncoded
+    @PUT("api/viewers/update-profil")
+    suspend fun updateProfilViewer(
+        @Header("Authorization") token: String,
+        @Field("nama") username: String,
+        @Field("email") email: String,
+        @Field("current_password") currentPassword: String,
+        @Field("new_password") newPassword: String
+    ): Response<Unit>
+
+    // --- Api Manajemen User (Admin - Prefix dipasangkan 'api/') ---
+    @GET("api/admin/manajemen_user/ambilData")
+    suspend fun getAllUsers(): Response<UserResponse>
+
+    @POST("api/admin/manajemen_user/tambahData")
+    suspend fun addUser(@Body user: User): Response<Unit>
+
+    @PUT("api/admin/manajemen_user/ubahData/{id}")
+    suspend fun updateUser(@Path("id") id: Int, @Body user: User): Response<Unit>
+
+    @DELETE("api/admin/manajemen_user/hapusData/{id}")
+    suspend fun deleteUser(@Path("id") id: Int): Response<Unit>
 }
