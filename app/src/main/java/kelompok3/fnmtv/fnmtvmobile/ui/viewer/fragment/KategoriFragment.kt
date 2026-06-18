@@ -48,9 +48,9 @@ class KategoriFragment : Fragment() {
                 if (response.isSuccessful) {
                     val allNews = response.body()?.data?.terbaru ?: emptyList()
                     val namaKategoriSelected = arguments?.getString("NAMA")?.lowercase()
-                    
-                    val filteredNews = allNews.filter { 
-                        it.kategori?.namaKategori?.lowercase() == namaKategoriSelected 
+
+                    val filteredNews = allNews.filter {
+                        it.kategori?.namaKategori?.lowercase() == namaKategoriSelected
                     }
                     
                     binding.rvBeritaKategori.layoutManager = LinearLayoutManager(requireContext())

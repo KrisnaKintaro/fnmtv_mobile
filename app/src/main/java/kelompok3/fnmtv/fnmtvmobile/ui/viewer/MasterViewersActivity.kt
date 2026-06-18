@@ -20,6 +20,7 @@ import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.HomeFragment
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.KategoriFragment
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.SearchFragment
 import kotlinx.coroutines.launch
+import kelompok3.fnmtv.fnmtvmobile.ui.viewer.fragment.EditProfilFragment
 
 class MasterViewersActivity : AppCompatActivity() {
 
@@ -31,7 +32,6 @@ class MasterViewersActivity : AppCompatActivity() {
         binding = ActivityMasterViewersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Pasang Home Fragment pas pertama buka
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, HomeFragment())
@@ -72,9 +72,13 @@ class MasterViewersActivity : AppCompatActivity() {
                 popupMenu.setOnMenuItemClickListener { itemPilihan ->
                     when (itemPilihan.title) {
                         "Edit Profil" -> {
-                            // 🚧 BLUEPRINT: [userprofil.blade.php]
-                            // TODO: Buka UserProfileActivity buat form update profil & ganti password
-                            Toast.makeText(this, "Membuka Menu Profil... (Halaman belum dibuat)", Toast.LENGTH_SHORT).show()
+                            // === KODE TRANSAKSI FRAGMENT MASUK DISINI ===
+                            val editProfilFragment = EditProfilFragment()
+                            supportFragmentManager.beginTransaction().apply {
+                                replace(R.id.fragment_container, editProfilFragment)
+                                addToBackStack(null)
+                                commit()
+                            }
                             true
                         }
                         "Keluar / Logout" -> {
@@ -84,7 +88,7 @@ class MasterViewersActivity : AppCompatActivity() {
                                 try {
                                     ApiClient.getApiService(this@MasterViewersActivity).logoutUser()
                                 } catch (e: Exception) {
-                                    Log.e("LOGOUT_API", "Server gagal dihubungi, tapi sesi lokal tetap dihapus")
+                                    Log.e("LOGOUT_API", "Server gagal dihubungi")
                                 } finally {
                                     sessionManager.clearSession()
                                     Toast.makeText(this@MasterViewersActivity, "Berhasil Keluar!", Toast.LENGTH_SHORT).show()
@@ -99,6 +103,7 @@ class MasterViewersActivity : AppCompatActivity() {
                 popupMenu.show()
             }
         } else {
+            // ... bagian kondisi else (Login / Register) tetap sama ...
             binding.layoutAuthButtons.visibility = android.view.View.VISIBLE
             binding.btnProfile.visibility = android.view.View.GONE
 
@@ -114,27 +119,15 @@ class MasterViewersActivity : AppCompatActivity() {
 
     private fun fetchKategoriDariApi() {
         lifecycleScope.launch {
-            var isSuccess = false
-
-            // Terus muter sampai isSuccess jadi true
-            while (!isSuccess) {
-                try {
-                    val response = ApiClient.getApiService(this@MasterViewersActivity).getKategori()
-
-                    if (response.isSuccessful && response.body()?.status == "success") {
-                        val daftarKategori = response.body()?.data ?: emptyList()
-                        setupNavbar(daftarKategori)
-                        setupFooter(daftarKategori)
-
-                        isSuccess = true
-                    } else {
-                        Log.e("API_RETRY", "Gagal dapet kategori, mencoba lagi dalam 2 detik...")
-                        kotlinx.coroutines.delay(2000)
-                    }
-                } catch (e: Exception) {
-                    Log.e("API_ERROR", "Koneksi Error: ${e.message}. mencoba lagi dalam 2 detik...")
-                    kotlinx.coroutines.delay(2000)
+            try {
+                val response = ApiClient.getApiService(this@MasterViewersActivity).getKategori()
+                if (response.isSuccessful && response.body()?.status == "success") {
+                    val daftarKategori = response.body()?.data ?: emptyList()
+                    setupNavbar(daftarKategori)
+                    setupFooter(daftarKategori)
                 }
+            } catch (e: Exception) {
+                Log.e("API_ERROR", "Koneksi Error: ${e.message}")
             }
         }
     }
@@ -146,25 +139,21 @@ class MasterViewersActivity : AppCompatActivity() {
         tabLayout.addTab(tabLayout.newTab().setText("HOME"))
 
         for (kategori in kategoriList) {
-            // Kita simpan ID atau Slug di tag biar nanti gampang ditarik pas diklik
-            val tab = tabLayout.newTab().setText(kategori.namaKategori).setTag(kategori.slug)
+            val tab = tabLayout.newTab().setText(kategori.namaKategori).setTag(kategori.id)
             tabLayout.addTab(tab)
         }
 
-        // 🚧 BLUEPRINT: [tampilantiapkategori.blade.php]
-        // TODO: Bikin aksi pas tab kategori diklik
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val transaction = supportFragmentManager.beginTransaction()
 
                 if (tab?.text == "HOME") {
-                    // Kembali ke Home yang ada Headline & Trending
                     transaction.replace(R.id.fragment_container, HomeFragment())
                 } else {
-                    // Pindah ke halaman Kategori Berita
-                    val slugKategori = tab?.tag as? String ?: ""
+                    val idKategori = tab?.tag as? Int ?: 0
                     val namaKategori = tab?.text.toString()
-                    transaction.replace(R.id.fragment_container, KategoriFragment.newInstance(slugKategori, namaKategori))
+
+                    transaction.replace(R.id.fragment_container, KategoriFragment.newInstance(idKategori.toString(), namaKategori))
                 }
                 transaction.commit()
             }
@@ -175,12 +164,9 @@ class MasterViewersActivity : AppCompatActivity() {
 
     private fun setupFooter(kategoriList: List<KategoriItem>) {
         val footerCategoryContainer = findViewById<LinearLayout>(R.id.footerCategoryContainer)
-
         if (footerCategoryContainer != null) {
             footerCategoryContainer.removeAllViews()
-            val batasKategori = kategoriList.take(4)
-
-            for (kategori in batasKategori) {
+            for (kategori in kategoriList.take(4)) {
                 val textView = TextView(this).apply {
                     text = kategori.namaKategori
                     setTextColor(android.graphics.Color.parseColor("#CCCCCC"))
