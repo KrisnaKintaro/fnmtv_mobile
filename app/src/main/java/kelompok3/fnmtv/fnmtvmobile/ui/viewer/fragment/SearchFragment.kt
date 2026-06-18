@@ -45,94 +45,106 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Setup RecyclerView
+        // Setup RecyclerView - ID disesuaikan menjadi rvSearchResults
         beritaAdapter = BeritaAdapter(emptyList())
-        binding.rvHasilPencarian.apply {
+        binding.rvSearchResults.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = beritaAdapter
         }
 
-        // Ambil keyword dari argument lalu langsung cari
+        // Ambil keyword dari argument lalu jalankan pencarian
         val keyword = arguments?.getString(ARG_KEYWORD) ?: ""
         if (keyword.isNotEmpty()) {
+            binding.tvSearchHeader.text = "Hasil Pencarian untuk: \"$keyword\""
             cariBeritaDenganVolley(keyword)
         }
     }
 
     private fun cariBeritaDenganVolley(keyword: String) {
         binding.progressBar.visibility = View.VISIBLE
-        binding.tvKosong.visibility = View.GONE
+        binding.tvEmptySearch.visibility = View.GONE
 
-        val encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8")
-        val url = "https://baru.fenomenatv.com/api/viewers/search?q=$encodedKeyword" // ✅ fix endpoint
+        try {
+            val encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8")
+            val url = "https://baru.fenomenatv.com/api/viewers/search?q=$encodedKeyword"
 
-        val requestQueue = Volley.newRequestQueue(requireContext())
+            val requestQueue = Volley.newRequestQueue(requireContext())
 
-        val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.GET, url, null,
-            { response ->
-                Log.d("SEARCH_RESPONSE", response.toString()) // sementara untuk debug
-                try {
-                    val status = response.getString("status")
-                    if (status == "success") {
-                        val hasilBerita = mutableListOf<BeritaItem>()
+            val jsonObjectRequest = JsonObjectRequest(
+                Request.Method.GET, url, null,
+                { response ->
+                    Log.d("SEARCH_RESPONSE", response.toString())
+                    try {
+                        val status = response.getString("status")
+                        if (status == "success") {
+                            val hasilBerita = mutableListOf<BeritaItem>()
 
-                        val paginationObject = response.getJSONObject("data")
-                        val dataArray = paginationObject.getJSONArray("data")
+                            val paginationObject = response.getJSONObject("data")
+                            val dataArray = paginationObject.getJSONArray("data")
 
-                        for (i in 0 until dataArray.length()) {
-                            val obj = dataArray.getJSONObject(i)
+                            // Update jumlah artikel yang ditemukan di header
+                            val totalArtikel = paginationObject.optInt("total", dataArray.length())
+                            binding.tvSearchCount.text = "Menemukan $totalArtikel artikel"
 
-                            val kategori = if (obj.has("kategori") && !obj.isNull("kategori")) {
-                                val kat = obj.getJSONObject("kategori")
-                                KategoriBerita(namaKategori = kat.optString("nama_kategori", "UMUM"))
-                            } else null
+                            for (i in 0 until dataArray.length()) {
+                                val obj = dataArray.getJSONObject(i)
 
-                            val user = if (obj.has("user") && !obj.isNull("user")) {
-                                val usr = obj.getJSONObject("user")
-                                UserBerita(username = usr.optString("username", ""))
-                            } else null
+                                val kategori = if (obj.has("kategori") && !obj.isNull("kategori")) {
+                                    val kat = obj.getJSONObject("kategori")
+                                    KategoriBerita(namaKategori = kat.optString("nama_kategori", "UMUM"))
+                                } else null
 
-                            val berita = BeritaItem(
-                                id             = obj.optInt("id"),
-                                judulBerita    = obj.optString("judul_berita"),
-                                slug           = obj.optString("slug"),
-                                fotoThumbnail  = obj.optString("foto_thumbnail"),
-                                waktuPublikasi = obj.optString("waktu_publikasi"),
-                                jumlahView     = obj.optString("jumlah_view"),
-                                isiBerita      = obj.optString("isi_berita"),
-                                kategori       = kategori,
-                                user           = user
-                            )
-                            hasilBerita.add(berita)
-                        }
+                                val user = if (obj.has("user") && !obj.isNull("user")) {
+                                    val usr = obj.getJSONObject("user")
+                                    UserBerita(username = usr.optString("username", ""))
+                                } else null
 
-                        if (hasilBerita.isEmpty()) {
-                            binding.tvKosong.visibility = View.VISIBLE
-                            binding.rvHasilPencarian.visibility = View.GONE
+                                val berita = BeritaItem(
+                                    id             = obj.optInt("id"),
+                                    judulBerita    = obj.optString("judul_berita"),
+                                    slug           = obj.optString("slug"),
+                                    fotoThumbnail  = obj.optString("foto_thumbnail"),
+                                    waktuPublikasi = obj.optString("waktu_klik", obj.optString("waktu_publikasi")),
+                                    jumlahView     = obj.optString("jumlah_view"),
+                                    isiBerita      = obj.optString("isi_berita"),
+                                    kategori       = kategori,
+                                    user           = user
+                                )
+                                hasilBerita.add(berita)
+                            }
+
+                            if (hasilBerita.isEmpty()) {
+                                binding.tvEmptySearch.visibility = View.VISIBLE
+                                binding.rvSearchResults.visibility = View.GONE
+                            } else {
+                                binding.tvEmptySearch.visibility = View.GONE
+                                binding.rvSearchResults.visibility = View.VISIBLE
+                                beritaAdapter.updateData(hasilBerita)
+                            }
                         } else {
-                            binding.tvKosong.visibility = View.GONE
-                            binding.rvHasilPencarian.visibility = View.VISIBLE
-                            beritaAdapter.updateData(hasilBerita)
+                            binding.tvEmptySearch.visibility = View.VISIBLE
                         }
-                    } else {
-                        binding.tvKosong.visibility = View.VISIBLE
+                    } catch (e: Exception) {
+                        Log.e("SEARCH_ERROR", "Parse error: ${e.message}")
+                        binding.tvEmptySearch.visibility = View.VISIBLE
+                    } finally {
+                        binding.progressBar.visibility = View.GONE
                     }
-                } catch (e: Exception) {
-                    Log.e("SEARCH_ERROR", "Parse error: ${e.message}")
-                    binding.tvKosong.visibility = View.VISIBLE
-                } finally {
+                },
+                { error ->
+                    Log.e("SEARCH_ERROR", "Volley error: ${error.message}")
                     binding.progressBar.visibility = View.GONE
+                    binding.tvEmptySearch.visibility = View.VISIBLE
                 }
-            },
-            { error ->
-                Log.e("SEARCH_ERROR", "Volley error: ${error.message}")
-                binding.progressBar.visibility = View.GONE
-                binding.tvKosong.visibility = View.VISIBLE
-            }
-        )
+            )
 
-        requestQueue.add(jsonObjectRequest)
+            requestQueue.add(jsonObjectRequest)
+
+        } catch (e: Exception) {
+            Log.e("SEARCH_ERROR", "Encoding error: ${e.message}")
+            binding.progressBar.visibility = View.GONE
+            binding.tvEmptySearch.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

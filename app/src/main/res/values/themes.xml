@@ -1,17 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.FnmtvMobile" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.FnmtvMobile" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/fnm_red</item>
+        <item name="colorPrimaryVariant">@color/fnm_red</item>
         <item name="colorOnPrimary">@color/fnm_white</item>
 
-        <item name="android:windowBackground">@color/fnm_bg</item>
+        <item name="colorSecondary">@color/fnm_red</item>
+        <item name="colorSecondaryVariant">@color/fnm_red</item>
+        <item name="colorOnSecondary">@color/fnm_white</item>
 
+        <item name="android:windowBackground">@color/fnm_bg</item>
         <item name="android:statusBarColor">@color/fnm_red</item>
 
         <item name="actionOverflowMenuStyle">@style/RedOverflowMenu</item>
         <item name="actionBarPopupTheme">@style/RedPopupMenu</item>
     </style>
-
-    <style name="Theme.FnmtvMobile" parent="Base.Theme.FnmtvMobile" />
 
     <style name="RedOverflowMenu" parent="Widget.MaterialComponents.PopupMenu.Overflow">
         <item name="android:overlapAnchor">false</item>
@@ -22,7 +24,6 @@
         <item name="colorSurface">@color/fnm_red</item>
         <item name="android:colorBackground">@color/fnm_red</item>
         <item name="android:popupBackground">@color/fnm_red</item>
-
         <item name="colorOnSurface">@color/fnm_white</item>
         <item name="android:textColor">@color/fnm_white</item>
         <item name="android:textColorPrimary">@color/fnm_white</item>

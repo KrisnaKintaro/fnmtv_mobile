@@ -4,26 +4,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fnm_bg">
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/fnm_white"
+        android:background="@android:color/white"
         app:elevation="3dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/fnm_white"
+            android:background="@android:color/white"
             app:navigationIcon="@drawable/ic_back"
             app:title="Edit Profil"
             app:titleTextColor="@android:color/black" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Konten Form dengan Scroll -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -98,7 +101,6 @@
                 android:layout_height="1dp"
                 android:background="@color/fnm_border"
                 android:layout_marginBottom="24dp" />
-
 
             <!-- Form Username -->
             <TextView
@@ -249,7 +251,7 @@
                 android:id="@+id/btnBatal"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:backgroundTint="@color/fnm_white"
+                android:backgroundTint="@android:color/white"
                 android:text="Batal"
                 android:textAllCaps="false"
                 android:textColor="@color/fnm_text"
@@ -257,12 +259,13 @@
                 app:strokeColor="@color/fnm_border"
                 app:strokeWidth="1dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_marginBottom="32dp" />
+                android:layout_marginBottom="24dp" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Indikator Loading -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
