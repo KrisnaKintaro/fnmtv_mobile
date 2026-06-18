@@ -4,10 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +20,7 @@ import kelompok3.fnmtv.fnmtvmobile.R
 import kelompok3.fnmtv.fnmtvmobile.data.api.ApiClient
 import kelompok3.fnmtv.fnmtvmobile.data.local.SessionManager
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.BeritaItem
+import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.KomentarItem
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityDetailBeritaBinding
 import kelompok3.fnmtv.fnmtvmobile.ui.adapter.viewer.KomentarAdapter
 import kelompok3.fnmtv.fnmtvmobile.ui.auth.LoginActivity
@@ -52,10 +57,11 @@ class DetailBeritaActivity : AppCompatActivity() {
             finish()
         }
     }
+
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                finish() // Menutup activity detail dan kembali ke halaman sebelumnya
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -63,7 +69,19 @@ class DetailBeritaActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerViewKomentar() {
-        komentarAdapter = KomentarAdapter()
+        // Ambil ID user dari session, kalau nggak ada anggap aja 0 (belum login)
+        val currentUserId = sessionManager.fetchUserId() ?: 0
+
+        komentarAdapter = KomentarAdapter(
+            currentUserId = currentUserId,
+            onEditClicked = { komentar ->
+                tampilkanDialogEdit(komentar)
+            },
+            onDeleteClicked = { komentar ->
+                tampilkanDialogHapus(komentar)
+            }
+        )
+
         binding.rvKomentar.apply {
             layoutManager = LinearLayoutManager(this@DetailBeritaActivity)
             adapter = komentarAdapter
@@ -72,7 +90,6 @@ class DetailBeritaActivity : AppCompatActivity() {
     }
 
     private fun setupActionListeners(slug: String) {
-        // Reaksi menggunakan bahasa Indonesia sesuai dengan ReaksiController.php
         binding.btnLike.setOnClickListener { handleReaction(slug, "suka") }
         binding.btnLove.setOnClickListener { handleReaction(slug, "cinta") }
         binding.btnWow.setOnClickListener  { handleReaction(slug, "kaget") }
@@ -88,6 +105,97 @@ class DetailBeritaActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this, "Tulis komentar terlebih dahulu!", Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+    }
+
+    // ==========================================
+    // DIALOG EDIT & HAPUS KOMENTAR
+    // ==========================================
+
+    private fun tampilkanDialogEdit(komentar: KomentarItem) {
+        val editText = EditText(this).apply {
+            setText(komentar.isiKomentar)
+            setPadding(40, 40, 40, 40)
+            background = ContextCompat.getDrawable(context, R.drawable.bg_edittext) // Ganti kalau lu punya background custom
+        }
+
+        val container = FrameLayout(this)
+        val params = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply {
+            setMargins(50, 20, 50, 0)
+        }
+        editText.layoutParams = params
+        container.addView(editText)
+
+        AlertDialog.Builder(this)
+            .setTitle("Edit Komentar")
+            .setView(container)
+            .setPositiveButton("Simpan") { _, _ ->
+                val textBaru = editText.text.toString().trim()
+                if (textBaru.isNotEmpty()) {
+                    komentar.id?.let { id -> prosesEditKomentar(id, textBaru) }
+                } else {
+                    Toast.makeText(this, "Komentar nggak boleh kosong!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun tampilkanDialogHapus(komentar: KomentarItem) {
+        AlertDialog.Builder(this)
+            .setTitle("Hapus Komentar")
+            .setMessage("Lu yakin mau menghapus komentar ini? Komentar yang dihapus nggak bisa dibalikin lagi.")
+            .setPositiveButton("Hapus") { _, _ ->
+                komentar.id?.let { id -> prosesHapusKomentar(id) }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    // ==========================================
+    // API CALLS (RETROFIT)
+    // ==========================================
+
+    private fun prosesEditKomentar(komentarId: Int, isiBaru: String) {
+        val token = "Bearer ${sessionManager.fetchAuthToken()}"
+
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.getApiService(this@DetailBeritaActivity)
+                    .editKomentar(token, komentarId, isiBaru)
+
+                if (response.isSuccessful) {
+                    Toast.makeText(this@DetailBeritaActivity, "Komentar berhasil diupdate", Toast.LENGTH_SHORT).show()
+                    beritaSlug?.let { fetchDetailBerita(it) } // Refresh berita
+                } else {
+                    Toast.makeText(this@DetailBeritaActivity, "Gagal update komentar", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("KOMENTAR_ERROR", "Edit gagal: ${e.message}")
+            }
+        }
+    }
+
+    private fun prosesHapusKomentar(komentarId: Int) {
+        val token = "Bearer ${sessionManager.fetchAuthToken()}"
+
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.getApiService(this@DetailBeritaActivity)
+                    .hapusKomentar(token, komentarId)
+
+                if (response.isSuccessful) {
+                    Toast.makeText(this@DetailBeritaActivity, "Komentar berhasil dihapus", Toast.LENGTH_SHORT).show()
+                    beritaSlug?.let { fetchDetailBerita(it) } // Refresh berita
+                } else {
+                    Toast.makeText(this@DetailBeritaActivity, "Gagal menghapus komentar", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("KOMENTAR_ERROR", "Hapus gagal: ${e.message}")
             }
         }
     }
@@ -150,7 +258,6 @@ class DetailBeritaActivity : AppCompatActivity() {
         val htmlContent = berita.isiBerita ?: "Tidak ada konten."
         binding.tvDetailContent.text = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-        // ✅ PERBAIKAN FINAL: Menggunakan syntax [key] untuk menghindari konflik library
         val rekap = berita.reaksiRekap
         binding.btnLike.text = "👍 ${rekap?.suka ?: 0}"
         binding.btnLove.text = "❤️ ${rekap?.cinta ?: 0}"

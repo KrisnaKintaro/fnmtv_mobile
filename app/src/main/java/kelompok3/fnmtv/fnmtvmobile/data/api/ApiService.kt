@@ -1,7 +1,5 @@
 package kelompok3.fnmtv.fnmtvmobile.data.api
 
-import kelompok3.fnmtv.fnmtvmobile.data.model.User
-import kelompok3.fnmtv.fnmtvmobile.data.model.admin.UserResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.BeritaResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.KategoriResponse
 import kelompok3.fnmtv.fnmtvmobile.data.model.auth.AuthResponse
@@ -49,14 +47,6 @@ interface ApiService {
         @Field("jenis_reaksi") jenisReaksi: String
     ): Response<Unit>
 
-    @FormUrlEncoded
-    @POST("api/viewers/tambahKomentar")
-    suspend fun kirimKomentar(
-        @Header("Authorization") token: String,
-        @Field("berita_id") beritaId: Int,
-        @Field("isi_komentar") isiKomentar: String
-    ): Response<Unit>
-
     // --- Api Auth ---
     @POST("api/auth/login")
     suspend fun loginUser(@Body request: LoginRequest): Response<AuthResponse>
@@ -79,8 +69,7 @@ interface ApiService {
         @Field("password_baru_confirmation") konfirmasiPassword: String
     ): Response<Unit>
 
-    // --- Api Update Profil Terpadu ---
-    // ✅ REVISI: Menggunakan @PUT murni sesuai dengan penyesuaian hosting dan api.php terbaru
+    // --- Api Update Profil---
     @FormUrlEncoded
     @PUT("api/viewers/update-profil")
     suspend fun updateProfilViewer(
@@ -92,16 +81,41 @@ interface ApiService {
         @Field("password_confirmation") konfirmasi: String
     ): Response<Unit>
 
-    // --- Api Manajemen User (Admin) ---
-    @GET("api/admin/manajemen_user/ambilData")
-    suspend fun getAllUsers(): Response<UserResponse>
+    // API CRUD Komentar
 
-    @POST("api/admin/manajemen_user/tambahData")
-    suspend fun addUser(@Body user: User): Response<Unit>
+    @FormUrlEncoded
+    @PUT("viewers/komentar/{id}")
+    suspend fun editKomentar(
+        @Path("id") id: Int,
+        @Field("isi_komentar") isiKomentar: String
+    ): Response<Unit> // Sesuaikan dengan class Response lu
 
-    @PUT("api/admin/manajemen_user/ubahData/{id}")
-    suspend fun updateUser(@Path("id") id: Int, @Body user: User): Response<Unit>
+    @DELETE("viewers/komentar/{id}")
+    suspend fun hapusKomentar(
+        @Path("id") id: Int
+    ): Response<Unit>
 
-    @DELETE("api/admin/manajemen_user/hapusData/{id}")
-    suspend fun deleteUser(@Path("id") id: Int): Response<Unit>
+    // API CRUD Komentar
+
+    @FormUrlEncoded
+    @POST("api/viewers/tambahKomentar")
+    suspend fun kirimKomentar(
+        @Header("Authorization") token: String,
+        @Field("berita_id") beritaId: Int,
+        @Field("isi_komentar") isiKomentar: String
+    ): Response<Unit>
+
+    @FormUrlEncoded
+    @PUT("api/viewers/komentar/{id}")
+    suspend fun editKomentar(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Field("isi_komentar") isiKomentar: String
+    ): Response<Unit>
+
+    @DELETE("api/viewers/komentar/{id}")
+    suspend fun hapusKomentar(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<Unit>
 }
