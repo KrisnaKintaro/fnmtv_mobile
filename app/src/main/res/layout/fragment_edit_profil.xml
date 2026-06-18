@@ -1,271 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="@android:color/white"
     android:clickable="true"
     android:focusable="true">
 
-    <!-- Toolbar -->
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="Edit Profil"
+        app:titleTextColor="@android:color/black"
+        app:elevation="2dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        app:elevation="3dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
-            app:navigationIcon="@drawable/ic_back"
-            app:title="Edit Profil"
-            app:titleTextColor="@android:color/black" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Konten Form dengan Scroll -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingVertical="24dp">
 
-            <!-- Foto Profil -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingVertical="24dp">
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp">
 
-                <FrameLayout
+                <ImageView
+                    android:id="@+id/ivFotoProfil"
                     android:layout_width="100dp"
-                    android:layout_height="100dp">
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_profile"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/bg_input_rounded"
+                    android:padding="4dp"
+                    app:tint="@color/fnm_muted" />
 
-                    <ImageView
-                        android:id="@+id/ivFotoProfil"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/ic_profile"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/bg_input_rounded"
-                        android:padding="4dp"
-                        app:tint="@color/fnm_muted" />
+                <ImageView
+                    android:id="@+id/btnGantiFoto"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@color/fnm_red"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_person_add"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:tint="@color/fnm_white" />
 
-                    <ImageView
-                        android:id="@+id/btnGantiFoto"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="bottom|end"
-                        android:background="@color/fnm_red"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_person_add"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:tint="@color/fnm_white" />
+            </FrameLayout>
 
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/tvNamaUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Nama User"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvEmailUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="email@contoh.com"
-                    android:textColor="@color/fnm_muted"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/fnm_border"
-                android:layout_marginBottom="24dp" />
-
-            <!-- Form Username -->
             <TextView
+                android:id="@+id/tvNamaUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username"
+                android:layout_marginTop="12dp"
+                android:text="Nama User"
                 android:textColor="@android:color/black"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="6dp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etUsername"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_input_rounded"
-                android:hint="Masukkan username"
-                android:inputType="textNoSuggestions"
-                android:paddingHorizontal="14dp"
-                android:textColor="@color/fnm_text"
-                android:textColorHint="@color/fnm_muted"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Form Email -->
             <TextView
+                android:id="@+id/tvEmailUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="6dp" />
-
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_input_rounded"
-                android:hint="Masukkan email"
-                android:inputType="textEmailAddress"
-                android:paddingHorizontal="14dp"
-                android:textColor="@color/fnm_text"
-                android:textColorHint="@color/fnm_muted"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/fnm_border"
-                android:layout_marginBottom="24dp" />
-
-            <!-- Section Ganti Password -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ganti Password"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Form Password Lama -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password Lama"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="6dp" />
-
-            <EditText
-                android:id="@+id/etPasswordLama"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_input_rounded"
-                android:hint="Masukkan password lama"
-                android:inputType="textPassword"
-                android:paddingHorizontal="14dp"
-                android:textColor="@color/fnm_text"
-                android:textColorHint="@color/fnm_muted"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Form Password Baru -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password Baru"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="6dp" />
-
-            <EditText
-                android:id="@+id/etPasswordBaru"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_input_rounded"
-                android:hint="Masukkan password baru"
-                android:inputType="textPassword"
-                android:paddingHorizontal="14dp"
-                android:textColor="@color/fnm_text"
-                android:textColorHint="@color/fnm_muted"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Form Konfirmasi Password -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Konfirmasi Password Baru"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="6dp" />
-
-            <EditText
-                android:id="@+id/etKonfirmasiPassword"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_input_rounded"
-                android:hint="Ulangi password baru"
-                android:inputType="textPassword"
-                android:paddingHorizontal="14dp"
-                android:textColor="@color/fnm_text"
-                android:textColorHint="@color/fnm_muted"
-                android:textSize="14sp"
-                android:layout_marginBottom="32dp" />
-
-            <!-- Tombol Simpan -->
-            <Button
-                android:id="@+id/btnSimpan"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:backgroundTint="@color/fnm_red"
-                android:text="Simpan Perubahan"
-                android:textAllCaps="false"
-                android:textColor="@color/fnm_white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Tombol Batal -->
-            <Button
-                android:id="@+id/btnBatal"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:backgroundTint="@android:color/white"
-                android:text="Batal"
-                android:textAllCaps="false"
-                android:textColor="@color/fnm_text"
-                android:textSize="15sp"
-                app:strokeColor="@color/fnm_border"
-                app:strokeWidth="1dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_marginBottom="24dp" />
+                android:layout_marginTop="2dp"
+                android:text="email@contoh.com"
+                android:textColor="@color/fnm_muted"
+                android:textSize="13sp" />
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/fnm_border"
+            android:layout_marginBottom="24dp" />
 
-    <!-- Indikator Loading -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@android:color/black"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_input_rounded"
+            android:hint="Masukkan username"
+            android:inputType="textNoSuggestions"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/fnm_text"
+            android:textColorHint="@color/fnm_muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textColor="@android:color/black"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_input_rounded"
+            android:hint="Masukkan email"
+            android:inputType="textEmailAddress"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/fnm_text"
+            android:textColorHint="@color/fnm_muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/fnm_border"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ganti Password"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password Lama"
+            android:textColor="@android:color/black"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/etPasswordLama"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_input_rounded"
+            android:hint="Masukkan password lama"
+            android:inputType="textPassword"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/fnm_text"
+            android:textColorHint="@color/fnm_muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password Baru"
+            android:textColor="@android:color/black"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/etPasswordBaru"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_input_rounded"
+            android:hint="Masukkan password baru"
+            android:inputType="textPassword"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/fnm_text"
+            android:textColorHint="@color/fnm_muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Konfirmasi Password Baru"
+            android:textColor="@android:color/black"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/etKonfirmasiPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_input_rounded"
+            android:hint="Ulangi password baru"
+            android:inputType="textPassword"
+            android:paddingHorizontal="14dp"
+            android:textColor="@color/fnm_text"
+            android:textColorHint="@color/fnm_muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="32dp" />
+
+        <Button
+            android:id="@+id/btnSimpan"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/fnm_red"
+            android:text="Simpan Perubahan"
+            android:textAllCaps="false"
+            android:textColor="@color/fnm_white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnBatal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="@android:color/white"
+            android:text="Batal"
+            android:textAllCaps="false"
+            android:textColor="@color/fnm_text"
+            android:textSize="15sp"
+            app:strokeColor="@color/fnm_border"
+            app:strokeWidth="1dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -274,4 +248,4 @@
         android:indeterminateTint="@color/fnm_red"
         android:visibility="gone" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
