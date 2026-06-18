@@ -6,50 +6,54 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.BeritaItem
 import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.KategoriBerita
+import kelompok3.fnmtv.fnmtvmobile.data.model.viewer.UserBerita
 import kelompok3.fnmtv.fnmtvmobile.utils.Constants
 
 class VolleyManager(context: Context) {
-    // Siapin antrean Volley
     private val requestQueue = Volley.newRequestQueue(context)
 
     fun searchBerita(keyword: String, onSuccess: (List<BeritaItem>) -> Unit, onError: (String) -> Unit) {
         val encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8")
-        val url = "${Constants.BASE_URL}viewers/search?q=$encodedKeyword"
+        val url = "${Constants.BASE_URL}api/viewers/search?q=$encodedKeyword"
 
         val request = JsonObjectRequest(Request.Method.GET, url, null,
             { response ->
                 try {
                     if (response.getString("status") == "success") {
-                        // Ambil Object Pagination-nya dulu
                         val paginationObject = response.getJSONObject("data")
-                        // Baru ambil Array aslinya dari dalam Object Pagination tadi
                         val dataArray = paginationObject.getJSONArray("data")
 
                         val listHasil = mutableListOf<BeritaItem>()
 
-                        // Bongkar JSON Array jadi List<BeritaItem>
                         for (i in 0 until dataArray.length()) {
                             val obj = dataArray.getJSONObject(i)
 
-                            // Tarik Kategori (Kalau ada)
-                            val kategoriObj = if (obj.has("kategori") && !obj.isNull("kategori")) obj.getJSONObject("kategori") else null
-                            val namaKategori = kategoriObj?.optString("nama_kategori", "UMUM") ?: "UMUM"
+                            // Parsing Kategori
+                            val kategori = if (obj.has("kategori") && !obj.isNull("kategori")) {
+                                val kat = obj.getJSONObject("kategori")
+                                KategoriBerita(namaKategori = kat.optString("nama_kategori", "UMUM"))
+                            } else null
 
-                            // Cetak jadi Objek Kotlin
+                            // Parsing User (biar sinkron sama SearchFragment lu)
+                            val user = if (obj.has("user") && !obj.isNull("user")) {
+                                val usr = obj.getJSONObject("user")
+                                UserBerita(username = usr.optString("username", ""))
+                            } else null
+
                             val berita = BeritaItem(
                                 id = obj.optInt("id"),
                                 judulBerita = obj.optString("judul_berita"),
                                 slug = obj.optString("slug"),
                                 fotoThumbnail = obj.optString("foto_thumbnail"),
-                                waktuPublikasi = obj.optString("waktu_publikasi"),
+                                waktuPublikasi = obj.optString("waktu_klik", obj.optString("waktu_publikasi")),
                                 jumlahView = obj.optString("jumlah_view"),
-                                isiBerita = obj.optString("isi_berita"), // ← TAMBAH INI
-                                kategori = KategoriBerita(namaKategori),
-                                user = null
+                                isiBerita = obj.optString("isi_berita"),
+                                kategori = kategori,
+                                user = user
                             )
                             listHasil.add(berita)
                         }
-                        onSuccess(listHasil) // Lempar data yang udah mateng ke UI!
+                        onSuccess(listHasil)
                     } else {
                         onError("Data tidak ditemukan.")
                     }
@@ -58,7 +62,7 @@ class VolleyManager(context: Context) {
                 }
             },
             { error ->
-                onError("Koneksi gagal! Cek internet lu. (${error.message})")
+                onError("Koneksi gagal! Cek internet lu. (${error.message ?: "Unknown Error"})")
             }
         )
         requestQueue.add(request)
