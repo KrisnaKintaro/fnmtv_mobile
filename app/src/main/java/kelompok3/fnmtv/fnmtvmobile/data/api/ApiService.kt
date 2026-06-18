@@ -28,14 +28,12 @@ interface ApiService {
     @GET("api/viewers/kategori")
     suspend fun getKategori(): Response<KategoriResponse>
 
-    // Mengambil berita berdasarkan kategori menggunakan slug sesuai route Laravel
     @GET("api/viewers/kategori/{slug}")
     suspend fun getBeritaByKategori(@Path("slug") slug: String): Response<BeritaResponse>
 
     @GET("api/viewers/berita/{slug}")
     suspend fun getDetailBerita(@Path("slug") slug: String): Response<DetailBeritaResponse>
 
-    // Endpoint search disesuaikan dengan Route::get('/search') di Laravel
     @GET("api/viewers/search")
     suspend fun searchBerita(@Query("q") keyword: String): Response<BeritaResponse>
 
@@ -82,12 +80,11 @@ interface ApiService {
     ): Response<Unit>
 
     // --- Api Update Profil Terpadu ---
-    // ✅ FIX: Ditambahkan Field current_password & new_password agar password ikut terkirim ke Laravel
+    // ✅ REVISI: Menggunakan @PUT murni sesuai dengan penyesuaian hosting dan api.php terbaru
     @FormUrlEncoded
-    @POST("api/viewers/update-profil")
+    @PUT("api/viewers/update-profil")
     suspend fun updateProfilViewer(
         @Header("Authorization") token: String,
-        @Field("_method") method: String = "PUT",
         @Field("username") username: String,
         @Field("email") email: String,
         @Field("current_password") currentPassword: String,
@@ -95,7 +92,7 @@ interface ApiService {
         @Field("password_confirmation") konfirmasi: String
     ): Response<Unit>
 
-    // --- Api Manajemen User (Admin - Prefix dipasangkan 'api/') ---
+    // --- Api Manajemen User (Admin) ---
     @GET("api/admin/manajemen_user/ambilData")
     suspend fun getAllUsers(): Response<UserResponse>
 

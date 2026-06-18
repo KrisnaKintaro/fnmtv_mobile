@@ -52,6 +52,9 @@ class EditProfilFragment : Fragment() {
 
         binding.etUsername.setText(namaLama)
         binding.etEmail.setText(emailLama)
+        binding.etEmail.isEnabled = false       // Mematikan fungsi input/klik
+        binding.etEmail.isFocusable = false     // Menghilangkan fokus keyboard
+        binding.etEmail.isFocusableInTouchMode = false
     }
 
     private fun setupActionListeners() {
@@ -87,6 +90,7 @@ class EditProfilFragment : Fragment() {
             return
         }
 
+        // Validasi logika jika form ganti password diotak-atik
         if (pwdLama.isNotEmpty() || pwdBaru.isNotEmpty() || konfPwd.isNotEmpty()) {
             if (pwdLama.isEmpty()) {
                 binding.etPasswordLama.error = "Masukkan password lama Anda"
@@ -105,32 +109,36 @@ class EditProfilFragment : Fragment() {
             }
         }
 
-        // ✅ SEKARANG PARAMETERNYA SUDAH COCOK 5 VALUE
         eksekusiUpdateProfil(username, email, pwdLama, pwdBaru, konfPwd)
     }
 
-    // ✅ DEKLARASI JUGA MENERIMA 5 VALUE (username, email, pasLama, pasBaru, konfPas)
     private fun eksekusiUpdateProfil(username: String, email: String, pasLama: String, pasBaru: String, konfPas: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnSimpan.isEnabled = false
 
-        val token = sessionManager.fetchAuthToken()
-        if (token.isNullOrEmpty()) {
+        val tokenRaw = sessionManager.fetchAuthToken()
+        if (tokenRaw.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "Sesi Anda habis, silakan login kembali", Toast.LENGTH_SHORT).show()
             binding.progressBar.visibility = View.GONE
             binding.btnSimpan.isEnabled = true
             return
         }
 
-        val tokenBearer = if (!token.startsWith("Bearer ")) "Bearer $token" else token
+        // ✅ PENANGANAN 401: Cek apakah token sudah menyimpan kata "Bearer " atau belum secara otomatis
+        val tokenBearer = when {
+            tokenRaw.startsWith("Bearer ", ignoreCase = true) -> tokenRaw
+            else -> "Bearer $tokenRaw"
+        }
+
+        Log.d("FNMTV_DEBUG", "Menembak API dengan Token: $tokenBearer")
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val apiService = ApiClient.getApiService(requireContext())
 
+                // Panggil interface ApiService murni PUT
                 val response = apiService.updateProfilViewer(
                     token = tokenBearer,
-                    method = "PUT",
                     username = username,
                     email = email,
                     currentPassword = pasLama,
@@ -139,24 +147,26 @@ class EditProfilFragment : Fragment() {
                 )
 
                 if (response.isSuccessful) {
+                    // Berhasil! Sinkronisasikan data ke Session lokal
                     sessionManager.saveUsername(username)
                     sessionManager.saveEmail(email)
 
-                    Toast.makeText(requireContext(), "Profil & Password berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Profil berhasil diperbarui!", Toast.LENGTH_SHORT).show()
                     parentFragmentManager.popBackStack()
                 } else {
                     val errorMsg = response.errorBody()?.string() ?: ""
                     Log.e("API_UPDATE_ERROR", "Code: ${response.code()}, Message: $errorMsg")
 
-                    if (response.code() == 422) {
-                        Toast.makeText(requireContext(), "Gagal: Data tidak valid atau password lama salah.", Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(requireContext(), "Gagal memperbarui profil (Kode: ${response.code()})", Toast.LENGTH_SHORT).show()
+                    // Variasi penanganan pesan berdasarkan status code response backend
+                    when (response.code()) {
+                        401 -> Toast.makeText(requireContext(), "Sesi login tidak valid (401). Coba log out lalu login kembali.", Toast.LENGTH_LONG).show()
+                        422 -> Toast.makeText(requireContext(), "Gagal: Validasi ditolak server atau password lama salah.", Toast.LENGTH_LONG).show()
+                        else -> Toast.makeText(requireContext(), "Gagal memperbarui profil (Kode: ${response.code()})", Toast.LENGTH_SHORT).show()
                     }
                 }
 
             } catch (e: Exception) {
-                Log.e("API_UPDATE_PROFIL", "Error: ${e.message}")
+                Log.e("API_UPDATE_PROFIL", "Crash Error: ${e.message}")
                 Toast.makeText(requireContext(), "Gagal terhubung ke server", Toast.LENGTH_SHORT).show()
             } finally {
                 if (_binding != null) {
