@@ -20,6 +20,19 @@ class SessionManager(context: Context) {
     fun fetchAuthToken(): String? = prefs.getString("USER_TOKEN", null)
     fun fetchUsername(): String? = prefs.getString("USER_NAME", null)
 
+    // ── ✅ FUNGSI BARU: Mengambil Email yang Kurang ──────────────────
+    fun fetchEmail(): String? = prefs.getString("USER_EMAIL", null)
+
+    // ── ✅ FUNGSI BARU: Menyimpan Username Setelah Diedit Profil ──────
+    fun saveUsername(username: String) {
+        prefs.edit().putString("USER_NAME", username).apply()
+    }
+
+    // ── ✅ FUNGSI BARU: Menyimpan Email Setelah Diedit Profil ─────────
+    fun saveEmail(email: String) {
+        prefs.edit().putString("USER_EMAIL", email).apply()
+    }
+
     // Fungsi hapus data pas user mencet tombol "Logout"
     fun clearSession() {
         prefs.edit().clear().apply()

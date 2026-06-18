@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -70,7 +71,17 @@
             android:layout_height="80dp"
             android:layout_marginVertical="24dp"
             android:background="#E0E0E0">
+
+            <ImageView
+                android:id="@+id/ivIklanHome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Banner Iklan"
+                android:visibility="gone" />
+
             <TextView
+                android:id="@+id/tvPlaceholderIklan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Space Iklan 728x90"
@@ -78,7 +89,6 @@
                 android:textColor="@color/fnm_muted"
                 android:textSize="12sp"/>
         </FrameLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

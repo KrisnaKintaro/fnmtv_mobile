@@ -44,11 +44,14 @@ class EditProfilFragment : Fragment() {
     }
 
     private fun loadDataProfilLama() {
-        binding.tvNamaUser.text = "User FNMTV"
-        binding.tvEmailUser.text = "user@fnmtv.com"
+        val namaLama = sessionManager.fetchUsername() ?: ""
+        val emailLama = sessionManager.fetchEmail() ?: ""
 
-        binding.etUsername.setText("user_fnmtv")
-        binding.etEmail.setText("user@fnmtv.com")
+        binding.tvNamaUser.text = namaLama.ifEmpty { "User FNMTV" }
+        binding.tvEmailUser.text = emailLama.ifEmpty { "user@fnmtv.com" }
+
+        binding.etUsername.setText(namaLama)
+        binding.etEmail.setText(emailLama)
     }
 
     private fun setupActionListeners() {
@@ -90,8 +93,8 @@ class EditProfilFragment : Fragment() {
                 binding.etPasswordLama.requestFocus()
                 return
             }
-            if (pwdBaru.length < 6) {
-                binding.etPasswordBaru.error = "Password baru minimal 6 karakter"
+            if (pwdBaru.length < 8) {
+                binding.etPasswordBaru.error = "Password baru minimal 8 karakter"
                 binding.etPasswordBaru.requestFocus()
                 return
             }
@@ -102,10 +105,12 @@ class EditProfilFragment : Fragment() {
             }
         }
 
-        eksekusiUpdateProfil(username, email, pwdLama, pwdBaru)
+        // ✅ SEKARANG PARAMETERNYA SUDAH COCOK 5 VALUE
+        eksekusiUpdateProfil(username, email, pwdLama, pwdBaru, konfPwd)
     }
 
-    private fun eksekusiUpdateProfil(username: String, email: String, pasLama: String, pasBaru: String) {
+    // ✅ DEKLARASI JUGA MENERIMA 5 VALUE (username, email, pasLama, pasBaru, konfPas)
+    private fun eksekusiUpdateProfil(username: String, email: String, pasLama: String, pasBaru: String, konfPas: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnSimpan.isEnabled = false
 
@@ -124,14 +129,19 @@ class EditProfilFragment : Fragment() {
                 val apiService = ApiClient.getApiService(requireContext())
 
                 val response = apiService.updateProfilViewer(
-                    tokenBearer,
-                    username,
-                    email,
-                    pasLama,
-                    pasBaru
+                    token = tokenBearer,
+                    method = "PUT",
+                    username = username,
+                    email = email,
+                    currentPassword = pasLama,
+                    newPassword = pasBaru,
+                    konfirmasi = konfPas
                 )
 
                 if (response.isSuccessful) {
+                    sessionManager.saveUsername(username)
+                    sessionManager.saveEmail(email)
+
                     Toast.makeText(requireContext(), "Profil & Password berhasil diperbarui!", Toast.LENGTH_SHORT).show()
                     parentFragmentManager.popBackStack()
                 } else {
@@ -139,7 +149,7 @@ class EditProfilFragment : Fragment() {
                     Log.e("API_UPDATE_ERROR", "Code: ${response.code()}, Message: $errorMsg")
 
                     if (response.code() == 422) {
-                        Toast.makeText(requireContext(), "Gagal: Password lama salah atau data tidak valid.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Gagal: Data tidak valid atau password lama salah.", Toast.LENGTH_LONG).show()
                     } else {
                         Toast.makeText(requireContext(), "Gagal memperbarui profil (Kode: ${response.code()})", Toast.LENGTH_SHORT).show()
                     }
