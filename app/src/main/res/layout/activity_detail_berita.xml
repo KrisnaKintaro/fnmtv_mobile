@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@android:color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -32,7 +35,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Kategori -->
             <TextView
                 android:id="@+id/tvDetailKategori"
                 android:layout_width="wrap_content"
@@ -45,7 +47,6 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- Judul -->
             <TextView
                 android:id="@+id/tvDetailJudul"
                 android:layout_width="match_parent"
@@ -56,7 +57,6 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <!-- Meta Data -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,7 +123,6 @@
                     android:src="@drawable/img_placeholder" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Isi Berita -->
             <TextView
                 android:id="@+id/tvDetailContent"
                 android:layout_width="match_parent"
@@ -139,7 +138,6 @@
                 android:layout_marginVertical="24dp"
                 android:background="#EEEEEE" />
 
-            <!-- Section Reaksi -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -194,7 +192,6 @@
                 android:layout_marginVertical="24dp"
                 android:background="#EEEEEE" />
 
-            <!-- Section Komentar -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,7 +217,6 @@
                 android:textColor="#7A7570"
                 android:visibility="gone" />
 
-            <!-- Input Komentar -->
             <LinearLayout
                 android:id="@+id/layoutInputKomentar"
                 android:layout_width="match_parent"
