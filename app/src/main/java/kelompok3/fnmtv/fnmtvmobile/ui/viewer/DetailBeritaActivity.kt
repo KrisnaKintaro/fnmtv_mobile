@@ -52,6 +52,16 @@ class DetailBeritaActivity : AppCompatActivity() {
             finish()
         }
     }
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        return when (item.itemId) {
+            // android.R.id.home adalah ID default untuk tombol panah kembali (ic_back) di Toolbar
+            android.R.id.home -> {
+                finish() // Menutup activity detail dan kembali ke halaman sebelumnya
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     private fun setupRecyclerViewKomentar() {
         komentarAdapter = KomentarAdapter()
