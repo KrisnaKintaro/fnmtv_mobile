@@ -62,7 +62,6 @@ class SearchFragment : Fragment() {
         binding.progressBar.visibility = View.VISIBLE
         binding.tvEmptySearch.visibility = View.GONE
 
-        // Cukup panggil fungsinya aja!
         volleyManager.searchBerita(keyword,
             onSuccess = { listBerita ->
                 binding.progressBar.visibility = View.GONE
