@@ -43,6 +43,7 @@ data class ReaksiRekap(
 
 data class KomentarItem(
     val id: Int? = null,
+    @SerializedName("user_id") val userId: Int? = null,
     @SerializedName("isi_komentar") val isiKomentar: String? = null,
     @SerializedName("created_at") val createdAt: String? = null,
     val user: UserBerita? = null

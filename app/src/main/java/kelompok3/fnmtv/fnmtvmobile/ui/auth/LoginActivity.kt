@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import kelompok3.fnmtv.fnmtvmobile.data.local.SessionManager
 import kelompok3.fnmtv.fnmtvmobile.databinding.ActivityLoginBinding
-import kelompok3.fnmtv.fnmtvmobile.ui.admin.AdminUserCrudActivity
 import kelompok3.fnmtv.fnmtvmobile.ui.viewer.MasterViewersActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -45,9 +44,9 @@ class LoginActivity : AppCompatActivity() {
 
                 val userData = authData?.data ?: authData?.user
 
-                // PIPA DATA BERHASIL: Ambil data JSON dan jebloskan ke memori lokal HP
                 sessionManager.saveSession(
                     token = authData?.token ?: "",
+                    userId = userData?.id ?: 0,
                     username = userData?.username ?: "Tanpa Nama",
                     email = userData?.email ?: ""
                 )
@@ -55,20 +54,10 @@ class LoginActivity : AppCompatActivity() {
                 val roleUser = userData?.role
                 Toast.makeText(this, "Login Berhasil, Role: $roleUser, Username:  ${userData?.username}", Toast.LENGTH_LONG).show()
 
-                // Pengecekan Role kebal huruf besar/kecil
-                if (roleUser.equals("admin", ignoreCase = true)) {
-                    // Jalur Khusus buat Admin
-                    val intent = Intent(this, AdminUserCrudActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
-                } else {
-                    // Jalur Normal buat Viewer/User lain
-                    val intent = Intent(this, MasterViewersActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
-                }
+                val intent = Intent(this, MasterViewersActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                finish()
             } else {
                 val kodeError = response?.code()
                 val pesanError = response?.errorBody()?.string()

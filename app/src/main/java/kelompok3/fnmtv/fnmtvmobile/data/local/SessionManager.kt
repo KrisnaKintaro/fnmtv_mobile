@@ -4,22 +4,24 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class SessionManager(context: Context) {
-    // Membuka file rahasia di dalam OS Android bernama "FNMTV_PREFS"
     private var prefs: SharedPreferences = context.getSharedPreferences("FNMTV_PREFS", Context.MODE_PRIVATE)
 
-    // Fungsi buat nyimpen data pas berhasil login
-    fun saveSession(token: String, username: String, email: String) {
+    fun saveSession(token: String, userId: Int, username: String, email: String) {
         val editor = prefs.edit()
         editor.putString("USER_TOKEN", token)
+        editor.putInt("USER_ID", userId) // Simpan ID
         editor.putString("USER_NAME", username)
         editor.putString("USER_EMAIL", email)
-        editor.apply() // Commit simpan ke memori internal
+        editor.apply()
     }
 
-    // Fungsi ngambil token buat dicek di Navbar
+    fun fetchUserId(): Int? {
+        val id = prefs.getInt("USER_ID", -1)
+        return if (id != -1) id else null
+    }
+
     fun fetchAuthToken(): String? = prefs.getString("USER_TOKEN", null)
     fun fetchUsername(): String? = prefs.getString("USER_NAME", null)
-
     fun fetchEmail(): String? = prefs.getString("USER_EMAIL", null)
 
     fun saveUsername(username: String) {
@@ -30,7 +32,6 @@ class SessionManager(context: Context) {
         prefs.edit().putString("USER_EMAIL", email).apply()
     }
 
-    // Fungsi hapus data pas user mencet tombol "Logout"
     fun clearSession() {
         prefs.edit().clear().apply()
     }
