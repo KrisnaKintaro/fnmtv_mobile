@@ -103,7 +103,7 @@ class MasterViewersActivity : AppCompatActivity() {
                 popupMenu.show()
             }
         } else {
-            // ... bagian kondisi else (Login / Register) tetap sama ...
+            // bagian kondisi else (Login / Register) tetap sama
             binding.layoutAuthButtons.visibility = android.view.View.VISIBLE
             binding.btnProfile.visibility = android.view.View.GONE
 

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class IklanResponse(
     val status: String?,
-    val data: IklanDataLayout? // ✅ Diubah menjadi Object, bukan List langsung
+    val data: IklanDataLayout? // Diubah menjadi Object, bukan List langsung
 )
 
 data class IklanDataLayout(
@@ -15,7 +15,7 @@ data class IklanDataLayout(
 data class IklanItem(
     val id: Int?,
     val judul: String?, // Sesuaikan dengan field 'judul' di Laravel
-    val gambar: String?, // ✅ FIX: di Laravel nama field-nya 'gambar'
-    @SerializedName("link_tujuan") val linkIklan: String?, // ✅ FIX: di Laravel nama field-nya 'link_tujuan'
+    val gambar: String?,
+    @SerializedName("link_tujuan") val linkIklan: String?,
     val posisi: String?
 )

@@ -17,19 +17,19 @@ class TrendingAdapter(private val listTrending: List<BeritaItem>) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(berita: BeritaItem, position: Int) {
-            // 1. Set Angka Peringkat (Rank 1, 2, 3 dst)
+            // Set Angka Peringkat (Rank 1, 2, 3 dst)
             binding.tvRank.text = (position + 1).toString()
 
-            // Warna Rank: Rank 1-3 Merah Terang, sisanya Abu-abu
+            // Rank 1-3 Merah Terang, sisanya Abu-abu
             if (position > 2) {
                 binding.tvRank.setTextColor(Color.parseColor("#7A7570"))
             }
 
-            // 2. Set Teks Judul dan Views
+            // Set Teks Judul dan Views
             binding.tvJudulTrending.text = berita.judulBerita
             binding.tvViewsTrending.text = "👁 ${berita.jumlahView ?: "0"} views"
 
-            // 3. Set Badge (HOT untuk Rank 1, NAIK untuk Rank 2)
+            // Set Badge (HOT untuk Rank 1, NAIK untuk Rank 2)
             when (position) {
                 0 -> {
                     binding.tvBadge.visibility = View.VISIBLE
@@ -48,7 +48,7 @@ class TrendingAdapter(private val listTrending: List<BeritaItem>) :
                 }
             }
 
-            // 4. Klik Item pindah ke Detail
+            // Klik Item pindah ke Detail
             binding.root.setOnClickListener {
                 val intent = Intent(itemView.context, DetailBeritaActivity::class.java)
                 intent.putExtra("BERITA_SLUG", berita.slug)
