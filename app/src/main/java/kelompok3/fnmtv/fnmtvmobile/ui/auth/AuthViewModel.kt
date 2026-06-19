@@ -51,7 +51,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                // Wajib ngetok minta CSRF cookie juga kayak login!
+                // Wajib minta CSRF cookie juga kayak login
                 ApiClient.getApiService(getApplication()).getCsrfCookie()
                 val hasilApi = repository.register(username, email, pas, pasConf)
                 _registerResult.value = hasilApi

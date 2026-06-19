@@ -33,8 +33,7 @@ class KomentarAdapter(
         holder.binding.tvNamaUser.text = item.user?.username ?: "Anonim"
         holder.binding.tvIsiKomentar.text = item.isiKomentar ?: ""
 
-        // CEK KEPEMILIKAN KOMENTAR
-        // Kalau userId di komentar sama dengan ID user yang lagi login, munculin tombol Opsi (titik tiga)
+        // Cek kepemilikan komentar
         if (item.userId == currentUserId) {
             holder.binding.btnOpsiKomentar.visibility = View.VISIBLE
 
@@ -51,7 +50,7 @@ class KomentarAdapter(
     private fun showPopupMenu(view: View, komentar: KomentarItem) {
         val popupMenu = PopupMenu(view.context, view)
 
-        // Bikin menu "Edit" dan "Hapus" langsung dari kode (nggak usah bikin XML menu baru)
+        // Bikin menu "Edit" dan "Hapus" langsung dari kode
         popupMenu.menu.add(Menu.NONE, 1, 1, "Edit Komentar")
         popupMenu.menu.add(Menu.NONE, 2, 2, "Hapus Komentar")
 

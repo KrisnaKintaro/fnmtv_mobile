@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(this)
 
-        // 1. Amati Variabel Loading (Kondisi tombol pas loading API)
+        // Variabel Loading (Kondisi tombol pas loading API)
         viewModel.isLoading.observe(this) { loading ->
             binding.btnLoginSubmit.isEnabled = !loading
             binding.btnLoginSubmit.text = if (loading) "Memproses..." else "Masuk"
@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
                         .setMessage("Akun anda belum diverifikasi! Cek email yang barusan didaftarin dan klik link verifikasinya.")
                         .setPositiveButton("Oke, Ngerti") { _, _ -> }
                         .show()
-                    return@observe // BERHENTI DI SINI, jangan simpen token atau pindah layar!
+                    return@observe // Berhenti, jangan simpen token atau pindah layar!
                 }
 
                 val userData = authData?.data ?: authData?.user
@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // 3. Kejadian saat tombol Masuk diklik
+        // Kejadian saat tombol Masuk diklik
         binding.btnLoginSubmit.setOnClickListener {
             val inputEmail = binding.etEmail.text.toString().trim()
             val inputPas = binding.etPassword.text.toString().trim()

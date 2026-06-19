@@ -31,8 +31,7 @@ data class BeritaItem(
     @SerializedName("komentar") val komentar: List<KomentarItem>? = null
 )
 
-// FIX: model baru sesuai struktur JSON backend
-// {"suka":0,"cinta":0,"kaget":0,"sedih":0,"marah":0}
+// Model baru sesuai struktur JSON backend
 data class ReaksiRekap(
     val suka: Int? = 0,
     val cinta: Int? = 0,
